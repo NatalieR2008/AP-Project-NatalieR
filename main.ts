@@ -82,6 +82,15 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     false
     )
 })
+function ReplaceInvertoryImages (NewImage: Image) {
+    if (ToolsImagesList.length == 3) {
+        Inventory1.setImage(NewImage)
+    } else if (ToolsImagesList.length == 2) {
+        Inventory2.setImage(NewImage)
+    } else {
+        Inventory3.setImage(NewImage)
+    }
+}
 scene.onOverlapTile(SpriteKind.Player, sprites.castle.tilePath2, function (sprite, location) {
     sprites.destroyAllSpritesOfKind(SpriteKind.Seller)
     sprites.destroyAllSpritesOfKind(SpriteKind.Chest)
@@ -212,26 +221,61 @@ scene.onOverlapTile(SpriteKind.Player, sprites.castle.tilePath2, function (sprit
 })
 scene.onOverlapTile(SpriteKind.Player, sprites.castle.saplingPine, function (sprite, location) {
     PlankCount = 0
-    game.splash("Press A to Cut down Trees")
     for (let value4 of sprites.allOfKind(SpriteKind.tools)) {
         if (value4.image.equals(img`
-            . . . . . . . . . 
-            . . . . . f f . . 
-            . . . . f f e f . 
-            . . . f f e f f f 
-            . . . . e f f f f 
-            . . . e . . f f f 
-            . . e . . . . f . 
-            . e . . . . . . . 
-            e . . . . . . . . 
+            1 1 1 1 1 1 1 1 1 
+            1 1 1 1 1 f f 1 1 
+            1 1 1 1 f f e f 1 
+            1 1 1 f f e f f f 
+            1 1 1 1 e f f f f 
+            1 1 1 e 1 1 f f f 
+            1 1 e 1 1 1 1 f 1 
+            1 e 1 1 1 1 1 1 1 
+            e 1 1 1 1 1 1 1 1 
             `)) {
             if (controller.A.isPressed()) {
                 PlankCount += 1
                 tiles.setTileAt(location, sprites.castle.tileGrass1)
             }
+        }
+    }
+})
+scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile12`, function (sprite, location) {
+    for (let value5 of sprites.allOfKind(SpriteKind.tools)) {
+        if (value5.image.equals(img`
+            1 1 1 1 1 1 1 1 1 
+            1 1 1 1 1 f f 1 1 
+            1 1 1 1 f f e f 1 
+            1 1 1 f f e f f f 
+            1 1 1 1 e f f f f 
+            1 1 1 e 1 1 f f f 
+            1 1 e 1 1 1 1 f 1 
+            1 e 1 1 1 1 1 1 1 
+            e 1 1 1 1 1 1 1 1 
+            `)) {
+            tiles.placeOnTile(Player1, tiles.getTileLocation(11, 3))
+            game.splash("You already have an axe")
         } else {
-            game.splash("No axe")
-            pause(100)
+            if (KeepingScore > 30 || KeepingScore == 30) {
+                AskYorN = game.askForNumber("Do you want to buy a $30 axe? Yes(1) or No(2)", 1)
+                tiles.placeOnTile(Player1, tiles.getTileLocation(11, 3))
+                if (AskYorN == 1) {
+                    ReplaceInvertoryImages(img`
+                        1 1 1 1 1 1 1 1 1 
+                        1 1 1 1 1 f f 1 1 
+                        1 1 1 1 f f e f 1 
+                        1 1 1 f f e f f f 
+                        1 1 1 1 e f f f f 
+                        1 1 1 e 1 1 f f f 
+                        1 1 e 1 1 1 1 f 1 
+                        1 e 1 1 1 1 1 1 1 
+                        e 1 1 1 1 1 1 1 1 
+                        `)
+                    KeepingScore += -30
+                } else {
+                    game.splash("You don't have enough for an axe")
+                }
+            }
         }
     }
 })
@@ -281,7 +325,6 @@ scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.chestClosed, function (sp
     tiles.setTileAt(location, sprites.dungeon.chestOpen)
     KeepingScore += PointValues._pickRandom()
     game.splash("You have: $", KeepingScore)
-    info.setScore(KeepingScore)
     pause(100)
 })
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
@@ -325,6 +368,32 @@ controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     100,
     false
     )
+})
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Seller, function (sprite, otherSprite) {
+    if (otherSprite.tileKindAt(TileDirection.Bottom, assets.tile`myTile1`)) {
+        AskYorN = game.askForNumber("Do you want to sell the fish you have? Yes(1) or No(2)", 1)
+        if (AskYorN == 1) {
+            tiles.placeOnTile(Player1, tiles.getTileLocation(5, 3))
+            KeepingScore += CommonFishCount * 15 * 5 + (RareFishCount * 15 + EpicFishCount * 30)
+            CommonFishCount += 0
+            RareFishCount += 0
+            EpicFishCount += 0
+        }
+    } else if (otherSprite.tileKindAt(TileDirection.Left, assets.tile`myTile14`)) {
+        AskYorN = game.askForNumber("Would you like to buy a random tool for $20? Yes(1) No(2)", 1)
+        if (AskYorN == 1) {
+            if (KeepingScore > 20 || KeepingScore == 20) {
+                KeepingScore += -20
+                tiles.placeOnTile(Player1, tiles.getTileLocation(11, 3))
+                ReplaceInvertoryImages(ToolsImagesList.removeAt(randint(0, ToolsImagesList.length - 1)))
+                pause(100)
+            } else {
+                tiles.placeOnTile(Player1, tiles.getTileLocation(11, 3))
+                game.splash("Come back when you have $20")
+                pause(100)
+            }
+        }
+    }
 })
 controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.runImageAnimation(
@@ -406,23 +475,20 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile5`, function (sprite, l
     RareFishCount = 0
     CommonFishCount = 0
     EpicFishCount = 0
-    game.splash("Press A to fish")
-    pause(100)
     for (let value3 of sprites.allOfKind(SpriteKind.tools)) {
         if (value3.image.equals(img`
-            . . . . . . . . . 
-            . . . . . . . . . 
-            . . . . . . e . . 
-            . . . . . e . d . 
-            . . . . e . . d . 
-            . . . e . . . d . 
-            . . e . . . d . . 
-            . e . . . . . f . 
-            e . . . . . . . . 
+            1 1 1 1 1 1 1 1 1 
+            1 1 1 1 1 1 1 1 1 
+            1 1 1 1 1 1 e 1 1 
+            1 1 1 1 1 e 1 d 1 
+            1 1 1 1 e 1 1 d 1 
+            1 1 1 e 1 1 1 d 1 
+            1 1 e 1 1 1 d 1 1 
+            1 e 1 1 1 1 1 f 1 
+            e 1 1 1 1 1 1 1 1 
             `)) {
             if (controller.A.isPressed()) {
                 FishCaught = AllFish._pickRandom()
-                game.splash("You Caught:", FishCaught)
                 if (FishCaught.kind() == SpriteKind.CommonFish) {
                     CommonFishCount += 1
                 } else if (FishCaught.kind() == SpriteKind.RareFish) {
@@ -430,10 +496,8 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile5`, function (sprite, l
                 } else {
                     EpicFishCount += 1
                 }
+                game.splash("You Caught:", FishCaught)
             }
-        } else {
-            game.splash("No fishing rod")
-            pause(100)
         }
     }
 })
@@ -566,26 +630,52 @@ scene.onOverlapTile(SpriteKind.Player, sprites.castle.tilePath8, function (sprit
 })
 function SpawnPeople (ImageList: Image[]) {
     for (let value of tiles.getTilesByType(sprites.dungeon.collectibleInsignia)) {
-        Peoples = sprites.create(ImageList[randint(0, ImageList.length - 1)], SpriteKind.Seller)
+        Peoples = sprites.create(ImageList._pickRandom(), SpriteKind.Seller)
         tiles.placeOnTile(Peoples, value)
         if (tiles.tileAtLocationEquals(tiles.getTileLocation(0, 0), assets.tile`myTile0`)) {
             tiles.setTileAt(value, sprites.dungeon.floorLight2)
         }
     }
 }
+scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile11`, function (sprite, location) {
+    if (KeepingScore > 15 || KeepingScore == 15) {
+        AskYorN = game.askForNumber("Do you want to buy a $15 fishing rod? Yes(1) or No(2)", 1)
+        tiles.placeOnTile(Player1, tiles.getTileLocation(11, 3))
+        if (AskYorN == 1) {
+            ReplaceInvertoryImages(img`
+                1 1 1 1 1 1 1 1 1 
+                1 1 1 1 1 1 1 1 1 
+                1 1 1 1 1 1 e 1 1 
+                1 1 1 1 1 e 1 d 1 
+                1 1 1 1 e 1 1 d 1 
+                1 1 1 e 1 1 1 d 1 
+                1 1 e 1 1 1 d 1 1 
+                1 e 1 1 1 1 1 f 1 
+                e 1 1 1 1 1 1 1 1 
+                `)
+            KeepingScore += -15
+        } else {
+            game.splash("You don't have enough for a fishing rod")
+        }
+    }
+})
 let Peoples: Sprite = null
 let FishCaught: Sprite = null
 let EpicFishCount = 0
-let CommonFishCount = 0
 let RareFishCount = 0
+let CommonFishCount = 0
+let AskYorN = 0
 let PlankCount = 0
+let Inventory3: Sprite = null
+let Inventory2: Sprite = null
+let Inventory1: Sprite = null
 let AllFish: Sprite[] = []
+let ToolsImagesList: Image[] = []
 let SellerImages: Image[] = []
 let Player1: Sprite = null
 let PointValues: number[] = []
 let KeepingScore = 0
 KeepingScore = 0
-info.setScore(KeepingScore)
 scene.setBackgroundImage(img`
     7777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777
     7777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777
@@ -710,9 +800,9 @@ scene.setBackgroundImage(img`
     `)
 PointValues = [
 15,
-25,
+7,
 10,
-20,
+18,
 5
 ]
 Player1 = sprites.create(img`
@@ -837,36 +927,36 @@ let PeopleTasksImages = [img`
     . . . f f f f f f . . . 
     . . . f f . . f f . . . 
     `]
-let ToolsImagesList = [img`
-    . . . f f f . . . 
-    . . . . f f f f . 
-    . . . . . . e f . 
-    . . . . . e . f f 
-    . . . . e . . f f 
-    . . . e . . . . f 
-    . . e . . . . . . 
-    . e . . . . . . . 
-    e . . . . . . . . 
+ToolsImagesList = [img`
+    1 1 1 f f f 1 1 1 
+    1 1 1 1 f f f f 1 
+    1 1 1 1 1 1 e f 1 
+    1 1 1 1 1 e 1 f f 
+    1 1 1 1 e 1 1 f f 
+    1 1 1 e 1 1 1 1 f 
+    1 1 e 1 1 1 1 1 1 
+    1 e 1 1 1 1 1 1 1 
+    e 1 1 1 1 1 1 1 1 
     `, img`
-    . . . . . . . . . 
-    . . . . . f f . . 
-    . . . . f f e f . 
-    . . . f f e f f f 
-    . . . . e f f f f 
-    . . . e . . f f f 
-    . . e . . . . f . 
-    . e . . . . . . . 
-    e . . . . . . . . 
+    1 1 1 1 1 1 1 1 1 
+    1 1 1 1 1 f f 1 1 
+    1 1 1 1 f f e f 1 
+    1 1 1 f f e f f f 
+    1 1 1 1 e f f f f 
+    1 1 1 e 1 1 f f f 
+    1 1 e 1 1 1 1 f 1 
+    1 e 1 1 1 1 1 1 1 
+    e 1 1 1 1 1 1 1 1 
     `, img`
-    . . . . . . . . . 
-    . . . . . . . . . 
-    . . . . . . e . . 
-    . . . . . e . d . 
-    . . . . e . . d . 
-    . . . e . . . d . 
-    . . e . . . d . . 
-    . e . . . . . f . 
-    e . . . . . . . . 
+    1 1 1 1 1 1 1 1 1 
+    1 1 1 1 1 1 1 1 1 
+    1 1 1 1 1 1 e 1 1 
+    1 1 1 1 1 e 1 d 1 
+    1 1 1 1 e 1 1 d 1 
+    1 1 1 e 1 1 1 d 1 
+    1 1 e 1 1 1 d 1 1 
+    1 e 1 1 1 1 1 f 1 
+    e 1 1 1 1 1 1 1 1 
     `]
 let TanFish = sprites.create(img`
     d . . . d d d d d . . 
@@ -930,7 +1020,7 @@ PinkFish,
 RedFish,
 TanFish
 ]
-let Inventory1 = sprites.create(img`
+Inventory1 = sprites.create(img`
     . . . . . . . . . . . . . . . . 
     . . . . . . . . . . . . . . . . 
     . . . . . . . . . . . . . . . . 
@@ -948,7 +1038,7 @@ let Inventory1 = sprites.create(img`
     . . . . . . . . . . . . . . . . 
     . . . . . . . . . . . . . . . . 
     `, SpriteKind.tools)
-let Inventory2 = sprites.create(img`
+Inventory2 = sprites.create(img`
     . . . . . . . . . . . . . . . . 
     . . . . . . . . . . . . . . . . 
     . . . . . . . . . . . . . . . . 
@@ -966,7 +1056,7 @@ let Inventory2 = sprites.create(img`
     . . . . . . . . . . . . . . . . 
     . . . . . . . . . . . . . . . . 
     `, SpriteKind.tools)
-let Inventory3 = sprites.create(img`
+Inventory3 = sprites.create(img`
     . . . . . . . . . . . . . . . . 
     . . . . . . . . . . . . . . . . 
     . . . . . . . . . . . . . . . . 
@@ -986,5 +1076,14 @@ let Inventory3 = sprites.create(img`
     `, SpriteKind.tools)
 tiles.setCurrentTilemap(tilemap`level2`)
 tiles.placeOnTile(Player1, tiles.getTileLocation(13, 7))
+game.splash("Press A to use tools when needed")
 controller.moveSprite(Player1)
 scene.cameraFollowSprite(Player1)
+game.onUpdate(function () {
+    Inventory1.setPosition(scene.cameraProperty(CameraProperty.X) - -45, scene.cameraProperty(CameraProperty.Y) - 50)
+    Inventory2.setPosition(scene.cameraProperty(CameraProperty.X) - 70, scene.cameraProperty(CameraProperty.Y) - 50)
+    Inventory3.setPosition(scene.cameraProperty(CameraProperty.X) - 55, scene.cameraProperty(CameraProperty.Y) - 50)
+})
+game.onUpdateInterval(100, function () {
+    info.setScore(KeepingScore)
+})
