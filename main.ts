@@ -1,11 +1,12 @@
 namespace SpriteKind {
     export const Seller = SpriteKind.create()
-    export const Chest = SpriteKind.create()
+    export const ClosedChest = SpriteKind.create()
     export const tools = SpriteKind.create()
     export const CommonFish = SpriteKind.create()
     export const RareFish = SpriteKind.create()
     export const EpicFish = SpriteKind.create()
     export const Wood = SpriteKind.create()
+    export const OpenChest = SpriteKind.create()
 }
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.runImageAnimation(
@@ -103,82 +104,23 @@ scene.onHitWall(SpriteKind.Player, function (sprite, location) {
                 }
             }
         }
-    }
-})
-function ReplaceInvertoryImages (NewImage: Image) {
-    if (Inventory1.image.equals(img`
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        `)) {
-        Inventory1.setImage(NewImage)
-    } else if (Inventory2.image.equals(img`
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        `)) {
-        Inventory2.setImage(NewImage)
-    } else {
-        Inventory3.setImage(NewImage)
-    }
-}
-scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile13`, function (sprite, location) {
-    tiles.placeOnTile(Player1, tiles.getTileLocation(11, 3))
-    for (let value8 of sprites.allOfKind(SpriteKind.tools)) {
-        if (value8.image.equals(img`
-            1 1 1 f f f 1 1 1 
-            1 1 1 1 f f f f 1 
-            1 1 1 1 1 1 e f 1 
-            1 1 1 1 1 e 1 f f 
-            1 1 1 1 e 1 1 f f 
-            1 1 1 e 1 1 1 1 f 
-            1 1 e 1 1 1 1 1 1 
-            1 e 1 1 1 1 1 1 1 
-            e 1 1 1 1 1 1 1 1 
-            `)) {
-            game.splash("You already have this")
-        } else {
-            if (KeepingScore > 100 || KeepingScore == 100) {
-                AskYorN = game.askForNumber("Buy a $100 pickaxe? Y(1)/N(2)", 1)
-                if (AskYorN == 1) {
-                    ReplaceInvertoryImages(img`
-                        1 1 1 f f f 1 1 1 
-                        1 1 1 1 f f f f 1 
-                        1 1 1 1 1 1 e f 1 
-                        1 1 1 1 1 e 1 f f 
-                        1 1 1 1 e 1 1 f f 
-                        1 1 1 e 1 1 1 1 f 
-                        1 1 e 1 1 1 1 1 1 
-                        1 e 1 1 1 1 1 1 1 
-                        e 1 1 1 1 1 1 1 1 
-                        `)
-                    KeepingScore += -100
+    } else if (tiles.tileAtLocationEquals(location, sprites.castle.rock0)) {
+        for (let value7 of sprites.allOfKind(SpriteKind.tools)) {
+            if (value7.image.equals(img`
+                1 1 1 f f f 1 1 1 
+                1 1 1 1 f f f f 1 
+                1 1 1 1 1 1 e f 1 
+                1 1 1 1 1 e 1 f f 
+                1 1 1 1 e 1 1 f f 
+                1 1 1 e 1 1 1 1 f 
+                1 1 e 1 1 1 1 1 1 
+                1 e 1 1 1 1 1 1 1 
+                e 1 1 1 1 1 1 1 1 
+                `)) {
+                if (controller.A.isPressed()) {
+                    tiles.setWallAt(location, false)
+                    tiles.setTileAt(location, sprites.castle.tileGrass3)
+                    StoneCount += 1
                 }
             }
         }
@@ -186,7 +128,7 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile13`, function (sprite, 
 })
 scene.onOverlapTile(SpriteKind.Player, sprites.castle.tilePath2, function (sprite, location) {
     sprites.destroyAllSpritesOfKind(SpriteKind.Seller)
-    sprites.destroyAllSpritesOfKind(SpriteKind.Chest)
+    sprites.destroyAllSpritesOfKind(SpriteKind.ClosedChest)
     scene.setBackgroundImage(img`
         7777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777
         7777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777
@@ -332,42 +274,6 @@ scene.onOverlapTile(SpriteKind.Player, sprites.castle.saplingPine, function (spr
         }
     }
 })
-scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile12`, function (sprite, location) {
-    tiles.placeOnTile(Player1, tiles.getTileLocation(11, 3))
-    for (let value5 of sprites.allOfKind(SpriteKind.tools)) {
-        if (value5.image.equals(img`
-            1 1 1 1 1 1 1 1 1 
-            1 1 1 1 1 f f 1 1 
-            1 1 1 1 f f e f 1 
-            1 1 1 f f e f f f 
-            1 1 1 1 e f f f f 
-            1 1 1 e 1 1 f f f 
-            1 1 e 1 1 1 1 f 1 
-            1 e 1 1 1 1 1 1 1 
-            e 1 1 1 1 1 1 1 1 
-            `)) {
-            game.splash("You already have this")
-        } else {
-            if (KeepingScore > 50 || KeepingScore == 50) {
-                AskYorN = game.askForNumber("Buy a $50 axe? Y(1)/N(2)", 1)
-                if (AskYorN == 1) {
-                    ReplaceInvertoryImages(img`
-                        1 1 1 1 1 1 1 1 1 
-                        1 1 1 1 1 f f 1 1 
-                        1 1 1 1 f f e f 1 
-                        1 1 1 f f e f f f 
-                        1 1 1 1 e f f f f 
-                        1 1 1 e 1 1 f f f 
-                        1 1 e 1 1 1 1 f 1 
-                        1 e 1 1 1 1 1 1 1 
-                        e 1 1 1 1 1 1 1 1 
-                        `)
-                    KeepingScore += -30
-                }
-            }
-        }
-    }
-})
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.runImageAnimation(
     Player1,
@@ -409,12 +315,6 @@ controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     100,
     false
     )
-})
-scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.chestClosed, function (sprite, location) {
-    tiles.setTileAt(location, sprites.dungeon.chestOpen)
-    KeepingScore += PointValues._pickRandom()
-    game.splash("You have: $", KeepingScore)
-    pause(100)
 })
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.runImageAnimation(
@@ -474,7 +374,47 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Seller, function (sprite, otherS
         if (AskYorN == 1) {
             if (KeepingScore > 20 || KeepingScore == 20) {
                 KeepingScore += -20
-                ReplaceInvertoryImages(ToolsImagesList.removeAt(randint(0, ToolsImagesList.length - 1)))
+                if (Inventory1.image.equals(img`
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    `)) {
+                    Inventory1.setImage(ToolsImagesList.removeAt(randint(0, ToolsImagesList.length - 1)))
+                } else if (Inventory2.image.equals(img`
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    `)) {
+                    Inventory2.setImage(ToolsImagesList.removeAt(randint(0, ToolsImagesList.length - 1)))
+                } else {
+                    Inventory3.setImage(ToolsImagesList.removeAt(randint(0, ToolsImagesList.length - 1)))
+                }
                 pause(100)
             } else {
                 tiles.placeOnTile(Player1, tiles.getTileLocation(11, 3))
@@ -483,11 +423,17 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Seller, function (sprite, otherS
             }
         }
     } else if (otherSprite.tileKindAt(TileDirection.Top, assets.tile`myTile1`)) {
-        AskYorN = game.askForNumber("Sell the wood you've collected?")
+        AskYorN = game.askForNumber("Sell the wood you've collected? Y(1)/N(2)", 1)
         tiles.placeOnTile(Player1, tiles.getTileLocation(3, 11))
         if (AskYorN == 1) {
             KeepingScore += PlankCount * 5
             PlankCount = 0
+        }
+    } else if (otherSprite.tileKindAt(TileDirection.Left, sprites.castle.rock2)) {
+        AskYorN = game.askForNumber("Sell the wood you've collected? Y(1)/N(2)", 1)
+        if (AskYorN == 1) {
+            KeepingScore += StoneCount * 5
+            StoneCount = 0
         }
     }
 })
@@ -584,12 +530,14 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile5`, function (sprite, l
                 FishCaught = AllFish._pickRandom()
                 if (FishCaught.kind() == SpriteKind.CommonFish) {
                     CommonFishCount += 1
+                    game.splash("You Caught:", "A common fish")
                 } else if (FishCaught.kind() == SpriteKind.RareFish) {
                     RareFishCount += 1
+                    game.splash("You Caught:", "A rare fish")
                 } else {
                     EpicFishCount += 1
+                    game.splash("You Caught:", "An epic fish")
                 }
-                game.splash("You Caught:", FishCaught)
             }
         }
     }
@@ -720,56 +668,90 @@ scene.onOverlapTile(SpriteKind.Player, sprites.castle.tilePath8, function (sprit
     tiles.setCurrentTilemap(tilemap`level3`)
     tiles.placeOnTile(Player1, tiles.getTileLocation(8, 12))
     SpawnPeople(SellerImages)
+    if (tilemap2Count == 0) {
+        for (let value6 of tiles.getTilesByType(sprites.dungeon.floorDarkDiamond)) {
+            Chest = sprites.create(img`
+                . . b b b b b b b b b b b b . . 
+                . b e 4 4 4 4 4 4 4 4 4 4 e b . 
+                b e 4 4 4 4 4 4 4 4 4 4 4 4 e b 
+                b e 4 4 4 4 4 4 4 4 4 4 4 4 e b 
+                b e 4 4 4 4 4 4 4 4 4 4 4 4 e b 
+                b e e 4 4 4 4 4 4 4 4 4 4 e e b 
+                b e e e e e e e e e e e e e e b 
+                b e e e e e e e e e e e e e e b 
+                b b b b b b b d d b b b b b b b 
+                c b b b b b b c c b b b b b b c 
+                c c c c c c b c c b c c c c c c 
+                b e e e e e c b b c e e e e e b 
+                b e e e e e e e e e e e e e e b 
+                b c e e e e e e e e e e e e c b 
+                b b b b b b b b b b b b b b b b 
+                . b b . . . . . . . . . . b b . 
+                `, SpriteKind.ClosedChest)
+            tiles.placeOnTile(Chest, value6)
+        }
+    } else {
+        for (let value6 of tiles.getTilesByType(sprites.dungeon.floorDarkDiamond)) {
+            Chest = sprites.create(img`
+                . . b b b b b b b b b b b b . . 
+                . b e 4 4 4 4 4 4 4 4 4 4 e b . 
+                b e 4 4 4 4 4 4 4 4 4 4 4 4 e b 
+                b e 4 4 4 4 4 4 4 4 4 4 4 4 e b 
+                b e 4 4 4 4 4 4 4 4 4 4 4 4 e b 
+                b e e 4 4 4 4 4 4 4 4 4 4 e e b 
+                b e e e e e e e e e e e e e e b 
+                b e e e e e e e e e e e e e e b 
+                b b b b b b b d d b b b b b b b 
+                c b b b b b b c c b b b b b b c 
+                c c c c c c b c c b c c c c c c 
+                b e e e e e c b b c e e e e e b 
+                b e e e e e e e e e e e e e e b 
+                b c e e e e e e e e e e e e c b 
+                b b b b b b b b b b b b b b b b 
+                . b b . . . . . . . . . . b b . 
+                `, SpriteKind.OpenChest)
+            tiles.placeOnTile(Chest, value6)
+        }
+    }
+    tilemap2Count += 1
 })
 function SpawnPeople (ImageList: Image[]) {
     for (let value of tiles.getTilesByType(sprites.dungeon.collectibleInsignia)) {
         Peoples = sprites.create(ImageList._pickRandom(), SpriteKind.Seller)
         tiles.placeOnTile(Peoples, value)
         if (tiles.tileAtLocationEquals(tiles.getTileLocation(0, 0), assets.tile`myTile0`)) {
-            tiles.setTileAt(value, sprites.dungeon.floorLight2)
+            tiles.setTileAt(value, sprites.dungeon.floorDark2)
         }
     }
 }
-scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile11`, function (sprite, location) {
-    for (let value6 of sprites.allOfKind(SpriteKind.tools)) {
-        if (value6.image.equals(img`
-            1 1 1 1 1 1 1 1 1 
-            1 1 1 1 1 1 1 1 1 
-            1 1 1 1 1 1 e 1 1 
-            1 1 1 1 1 e 1 d 1 
-            1 1 1 1 e 1 1 d 1 
-            1 1 1 e 1 1 1 d 1 
-            1 1 e 1 1 1 d 1 1 
-            1 e 1 1 1 1 1 f 1 
-            e 1 1 1 1 1 1 1 1 
-            `)) {
-            tiles.placeOnTile(Player1, tiles.getTileLocation(11, 3))
-            game.splash("You already have this")
-        } else {
-            if (KeepingScore > 30 || KeepingScore == 30) {
-                tiles.placeOnTile(Player1, tiles.getTileLocation(11, 3))
-                AskYorN = game.askForNumber("Buy a $30 fishing rod? Y(1)/N(2)", 1)
-                if (AskYorN == 1) {
-                    ReplaceInvertoryImages(img`
-                        1 1 1 1 1 1 1 1 1 
-                        1 1 1 1 1 1 1 1 1 
-                        1 1 1 1 1 1 e 1 1 
-                        1 1 1 1 1 e 1 d 1 
-                        1 1 1 1 e 1 1 d 1 
-                        1 1 1 e 1 1 1 d 1 
-                        1 1 e 1 1 1 d 1 1 
-                        1 e 1 1 1 1 1 f 1 
-                        e 1 1 1 1 1 1 1 1 
-                        `)
-                    KeepingScore += -30
-                }
-            }
-        }
-    }
+sprites.onOverlap(SpriteKind.Player, SpriteKind.ClosedChest, function (sprite, otherSprite) {
+    otherSprite.setKind(SpriteKind.OpenChest)
+    otherSprite.setImage(img`
+        . b b b b b b b b b b b b b b . 
+        b e 4 4 4 4 4 4 4 4 4 4 4 4 4 b 
+        b e 4 4 4 4 4 4 4 4 4 4 4 4 e b 
+        b e e 4 4 4 4 4 4 4 4 4 4 e e b 
+        b b b b b b b d d b b b b b b b 
+        . b b b b b b c c b b b b b b . 
+        b c c c c c b c c b c c c c c b 
+        b c c c c c c b b c c c c c c b 
+        b c c c c c c c c c c c c c c b 
+        b c c c c c c c c c c c c c c b 
+        b b b b b b b b b b b b b b b b 
+        b e e e e e e e e e e e e e e b 
+        b e e e e e e e e e e e e e e b 
+        b c e e e e e e e e e e e e c b 
+        b b b b b b b b b b b b b b b b 
+        . b b . . . . . . . . . . b b . 
+        `)
+    KeepingScore += PointValues._pickRandom()
+    game.splash("You have:", "$" + KeepingScore)
 })
 let Peoples: Sprite = null
+let Chest: Sprite = null
 let FishCaught: Sprite = null
 let AskYorN = 0
+let StoneCount = 0
 let PlankCount = 0
 let EpicFishCount = 0
 let CommonFishCount = 0
@@ -782,8 +764,10 @@ let ToolsImagesList: Image[] = []
 let SellerImages: Image[] = []
 let Player1: Sprite = null
 let PointValues: number[] = []
+let tilemap2Count = 0
 let KeepingScore = 0
 KeepingScore = 0
+tilemap2Count = 0
 scene.setBackgroundImage(img`
     7777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777
     7777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777
@@ -1186,6 +1170,7 @@ RareFishCount = 0
 CommonFishCount = 0
 EpicFishCount = 0
 PlankCount = 0
+StoneCount = 0
 tiles.setCurrentTilemap(tilemap`level2`)
 tiles.placeOnTile(Player1, tiles.getTileLocation(13, 7))
 game.splash("Walk around and explore")
