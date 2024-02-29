@@ -85,39 +85,23 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     )
 })
 scene.onHitWall(SpriteKind.Player, function (sprite, location) {
-    if (tiles.tileAtLocationEquals(location, assets.tile`myTile2`)) {
-        for (let value7 of sprites.allOfKind(SpriteKind.tools)) {
-            if (value7.image.equals(img`
-                1 1 1 f f f 1 1 1 
-                1 1 1 1 f f f f 1 
-                1 1 1 1 1 1 e f 1 
-                1 1 1 1 1 e 1 f f 
-                1 1 1 1 e 1 1 f f 
-                1 1 1 e 1 1 1 1 f 
-                1 1 e 1 1 1 1 1 1 
-                1 e 1 1 1 1 1 1 1 
-                e 1 1 1 1 1 1 1 1 
-                `)) {
-                if (controller.A.isPressed()) {
+    for (let value5 of sprites.allOfKind(SpriteKind.tools)) {
+        if (value5.image.equals(img`
+            1 1 1 f f f 1 1 1 
+            1 1 1 1 f f f f 1 
+            1 1 1 1 1 1 e f 1 
+            1 1 1 1 1 e 1 f f 
+            1 1 1 1 e 1 1 f f 
+            1 1 1 e 1 1 1 1 f 
+            1 1 e 1 1 1 1 1 1 
+            1 e 1 1 1 1 1 1 1 
+            e 1 1 1 1 1 1 1 1 
+            `)) {
+            if (controller.A.isPressed()) {
+                if (tiles.tileAtLocationEquals(location, assets.tile`myTile2`)) {
                     tiles.setWallAt(location, false)
                     tiles.setTileAt(location, sprites.dungeon.floorDark2)
-                }
-            }
-        }
-    } else if (tiles.tileAtLocationEquals(location, sprites.castle.rock0)) {
-        for (let value7 of sprites.allOfKind(SpriteKind.tools)) {
-            if (value7.image.equals(img`
-                1 1 1 f f f 1 1 1 
-                1 1 1 1 f f f f 1 
-                1 1 1 1 1 1 e f 1 
-                1 1 1 1 1 e 1 f f 
-                1 1 1 1 e 1 1 f f 
-                1 1 1 e 1 1 1 1 f 
-                1 1 e 1 1 1 1 1 1 
-                1 e 1 1 1 1 1 1 1 
-                e 1 1 1 1 1 1 1 1 
-                `)) {
-                if (controller.A.isPressed()) {
+                } else if (tiles.tileAtLocationEquals(location, sprites.castle.rock0)) {
                     tiles.setWallAt(location, false)
                     tiles.setTileAt(location, sprites.castle.tileGrass3)
                     StoneCount += 1
@@ -252,50 +236,26 @@ scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.floorLightMoss, function 
         `)
     tiles.setCurrentTilemap(tilemap`level3`)
     SpawnPeople(PeopleTasksImages)
-    if (tilemap2Count == 0) {
-        for (let value6 of tiles.getTilesByType(sprites.dungeon.floorDarkDiamond)) {
-            Chest = sprites.create(img`
-                . . b b b b b b b b b b b b . . 
-                . b e 4 4 4 4 4 4 4 4 4 4 e b . 
-                b e 4 4 4 4 4 4 4 4 4 4 4 4 e b 
-                b e 4 4 4 4 4 4 4 4 4 4 4 4 e b 
-                b e 4 4 4 4 4 4 4 4 4 4 4 4 e b 
-                b e e 4 4 4 4 4 4 4 4 4 4 e e b 
-                b e e e e e e e e e e e e e e b 
-                b e e e e e e e e e e e e e e b 
-                b b b b b b b d d b b b b b b b 
-                c b b b b b b c c b b b b b b c 
-                c c c c c c b c c b c c c c c c 
-                b e e e e e c b b c e e e e e b 
-                b e e e e e e e e e e e e e e b 
-                b c e e e e e e e e e e e e c b 
-                b b b b b b b b b b b b b b b b 
-                . b b . . . . . . . . . . b b . 
-                `, SpriteKind.ClosedChest)
-            tiles.placeOnTile(Chest, value6)
-        }
-    } else {
-        for (let value6 of tiles.getTilesByType(sprites.dungeon.floorDarkDiamond)) {
-            Chest = sprites.create(img`
-                . b b b b b b b b b b b b b b . 
-                b e 4 4 4 4 4 4 4 4 4 4 4 4 4 b 
-                b e 4 4 4 4 4 4 4 4 4 4 4 4 e b 
-                b e e 4 4 4 4 4 4 4 4 4 4 e e b 
-                b b b b b b b d d b b b b b b b 
-                . b b b b b b c c b b b b b b . 
-                b c c c c c b c c b c c c c c b 
-                b c c c c c c b b c c c c c c b 
-                b c c c c c c c c c c c c c c b 
-                b c c c c c c c c c c c c c c b 
-                b b b b b b b b b b b b b b b b 
-                b e e e e e e e e e e e e e e b 
-                b e e e e e e e e e e e e e e b 
-                b c e e e e e e e e e e e e c b 
-                b b b b b b b b b b b b b b b b 
-                . b b . . . . . . . . . . b b . 
-                `, SpriteKind.OpenChest)
-            tiles.placeOnTile(Chest, value6)
-        }
+    for (let value6 of tiles.getTilesByType(sprites.dungeon.floorDarkDiamond)) {
+        Chest = sprites.create(img`
+            . b b b b b b b b b b b b b b . 
+            b e 4 4 4 4 4 4 4 4 4 4 4 4 4 b 
+            b e 4 4 4 4 4 4 4 4 4 4 4 4 e b 
+            b e e 4 4 4 4 4 4 4 4 4 4 e e b 
+            b b b b b b b d d b b b b b b b 
+            . b b b b b b c c b b b b b b . 
+            b c c c c c b c c b c c c c c b 
+            b c c c c c c b b c c c c c c b 
+            b c c c c c c c c c c c c c c b 
+            b c c c c c c c c c c c c c c b 
+            b b b b b b b b b b b b b b b b 
+            b e e e e e e e e e e e e e e b 
+            b e e e e e e e e e e e e e e b 
+            b c e e e e e e e e e e e e c b 
+            b b b b b b b b b b b b b b b b 
+            . b b . . . . . . . . . . b b . 
+            `, SpriteKind.OpenChest)
+        tiles.placeOnTile(Chest, value6)
     }
     tiles.placeOnTile(Player1, tiles.getTileLocation(19, 8))
 })
@@ -729,14 +689,14 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Seller, function (sprite, otherS
         AskYorN = game.askForNumber("Sell the wood you've collected? Y(1)/N(2)", 1)
         tiles.placeOnTile(Player1, tiles.getTileLocation(3, 11))
         if (AskYorN == 1) {
-            KeepingScore += PlankCount * 5
+            KeepingScore += PlankCount * 4
             PlankCount = 0
         }
     } else if (otherSprite.tileKindAt(TileDirection.Left, sprites.castle.rock2)) {
         AskYorN = game.askForNumber("Sell the wood you've collected? Y(1)/N(2)", 1)
         tiles.placeOnTile(Player1, tiles.getTileLocation(16, 12))
         if (AskYorN == 1) {
-            KeepingScore += StoneCount * 7
+            KeepingScore += StoneCount * 6
             StoneCount = 0
         }
     }
@@ -1006,8 +966,8 @@ scene.onOverlapTile(SpriteKind.Player, sprites.castle.tilePath8, function (sprit
     tiles.setCurrentTilemap(tilemap`level3`)
     tiles.placeOnTile(Player1, tiles.getTileLocation(8, 12))
     SpawnPeople(SellerImages)
-    if (tilemap2Count == 0) {
-        for (let value6 of tiles.getTilesByType(sprites.dungeon.floorDarkDiamond)) {
+    for (let value6 of tiles.getTilesByType(sprites.dungeon.floorDarkDiamond)) {
+        if (tilemap2Count == 0) {
             Chest = sprites.create(img`
                 . . b b b b b b b b b b b b . . 
                 . b e 4 4 4 4 4 4 4 4 4 4 e b . 
@@ -1027,9 +987,7 @@ scene.onOverlapTile(SpriteKind.Player, sprites.castle.tilePath8, function (sprit
                 . b b . . . . . . . . . . b b . 
                 `, SpriteKind.ClosedChest)
             tiles.placeOnTile(Chest, value6)
-        }
-    } else {
-        for (let value6 of tiles.getTilesByType(sprites.dungeon.floorDarkDiamond)) {
+        } else {
             Chest = sprites.create(img`
                 . b b b b b b b b b b b b b b . 
                 b e 4 4 4 4 4 4 4 4 4 4 4 4 4 b 
