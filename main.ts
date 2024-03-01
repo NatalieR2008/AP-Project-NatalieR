@@ -721,6 +721,43 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Seller, function (sprite, otherS
                 } else {
                     Inventory3.setImage(ToolsImagesList.removeAt(randint(0, ToolsImagesList.length - 1)))
                 }
+                for (let value7 of sprites.allOfKind(SpriteKind.tools)) {
+                    if (value7.image.equals(img`
+                        1 1 1 1 1 1 1 1 1 
+                        1 1 1 1 1 1 1 1 1 
+                        1 1 1 1 1 1 e 1 1 
+                        1 1 1 1 1 e 1 d 1 
+                        1 1 1 1 e 1 1 d 1 
+                        1 1 1 e 1 1 1 d 1 
+                        1 1 e 1 1 1 d 1 1 
+                        1 e 1 1 1 1 1 f 1 
+                        e 1 1 1 1 1 1 1 1 
+                        `)) {
+                        game.splash("You got a fishing rod!")
+                        game.splash("Go to the green tiles", "by the water to fish")
+                        game.splash("You have 5 bait", "When you run out, buy some more")
+                        game.splash("When you run out of bait", "sell your fish and buy some more")
+                        BaitCount += 5
+                    } else if (value7.image.equals(img`
+                        1 1 1 1 1 1 1 1 1 
+                        1 1 1 1 1 f f 1 1 
+                        1 1 1 1 f f e f 1 
+                        1 1 1 f f e f f f 
+                        1 1 1 1 e f f f f 
+                        1 1 1 e 1 1 f f f 
+                        1 1 e 1 1 1 1 f 1 
+                        1 e 1 1 1 1 1 1 1 
+                        e 1 1 1 1 1 1 1 1 
+                        `)) {
+                        game.splash("You got an axe!")
+                        game.splash("Stand on the tree and Press A")
+                        game.splash("Sell your wood when finished ")
+                    } else {
+                        game.splash("You got a pickaxe!")
+                        game.splash("Run into the stone and press A")
+                        game.splash("Sell your stone when finished ")
+                    }
+                }
                 pause(100)
             } else {
                 tiles.placeOnTile(Player1, tiles.getTileLocation(11, 3))
@@ -1516,6 +1553,7 @@ CommonFishCount = 0
 EpicFishCount = 0
 PlankCount = 0
 StoneCount = 0
+let BaitCount = 0
 tiles.setCurrentTilemap(tilemap`level2`)
 tiles.placeOnTile(Player1, tiles.getTileLocation(18, 16))
 game.splash("Walk around and explore")
