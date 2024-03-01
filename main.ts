@@ -7,6 +7,7 @@ namespace SpriteKind {
     export const EpicFish = SpriteKind.create()
     export const Wood = SpriteKind.create()
     export const OpenChest = SpriteKind.create()
+    export const Nature = SpriteKind.create()
 }
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.runImageAnimation(
@@ -102,8 +103,29 @@ scene.onHitWall(SpriteKind.Player, function (sprite, location) {
                     tiles.setWallAt(location, false)
                     tiles.setTileAt(location, sprites.dungeon.floorDark2)
                 } else if (tiles.tileAtLocationEquals(location, sprites.castle.rock0)) {
-                    tiles.setWallAt(location, false)
+                    Stone = sprites.create(img`
+                        . . . . . c c b b b . . . . . . 
+                        . . . . c b d d d d b . . . . . 
+                        . . . . c d d d d d d b b . . . 
+                        . . . . c d d d d d d d d b . . 
+                        . . . c b b d d d d d d d b . . 
+                        . . . c b b d d d d d d d b . . 
+                        . c c c c b b b b d d d b b b . 
+                        . c d d b c b b b b b b b b d b 
+                        c b b d d d b b b b b d d b d b 
+                        c c b b d d d d d d d b b b d c 
+                        c b c c c b b b b b b b d d c c 
+                        c c b b c c c c b d d d b c c b 
+                        . c c c c c c c c c c c b b b b 
+                        . . c c c c c b b b b b b b c . 
+                        . . . . . . c c b b b b c c . . 
+                        . . . . . . . . c c c c . . . . 
+                        `, SpriteKind.Nature)
                     tiles.setTileAt(location, sprites.castle.tileGrass3)
+                    music.play(music.melodyPlayable(music.smallCrash), music.PlaybackMode.UntilDone)
+                    sprites.destroy(Stone, effects.disintegrate, 500)
+                    tiles.placeOnTile(Stone, location)
+                    tiles.setWallAt(location, false)
                     StoneCount += 1
                 }
             }
@@ -404,6 +426,27 @@ scene.onOverlapTile(SpriteKind.Player, sprites.castle.saplingPine, function (spr
             if (controller.A.isPressed()) {
                 PlankCount += 1
                 tiles.setTileAt(location, sprites.castle.tileGrass1)
+                Tree = sprites.create(img`
+                    . . . . . . . c c . . . . . . . 
+                    . . . . c c c 6 5 c 6 6 . . . . 
+                    . . . . c 6 c 5 5 c 7 6 . . . . 
+                    . . . 6 c c 7 5 5 7 c 6 6 . . . 
+                    . . c c 7 7 7 7 7 5 7 7 c 6 . . 
+                    . 6 6 6 c 6 7 7 7 7 6 c c 6 6 . 
+                    c 7 7 7 6 c 7 c 6 7 6 7 7 7 7 6 
+                    c c c 6 6 6 c 6 6 6 6 7 7 6 6 6 
+                    . c c 7 6 6 6 6 6 7 7 7 7 c 6 . 
+                    . c 7 7 6 6 7 6 6 7 7 6 7 7 c . 
+                    . c c c c 7 7 6 f 7 7 c c c c . 
+                    . . . . c 7 c f f c 7 c . . . . 
+                    . . . . . 6 f e e e c . . . . . 
+                    . . . . . e e e e e e . . . . . 
+                    . . . . e e . e e . e e . . . . 
+                    . . . . . . . e e . . . . . . . 
+                    `, SpriteKind.Nature)
+                tiles.placeOnTile(Tree, location)
+                music.play(music.melodyPlayable(music.smallCrash), music.PlaybackMode.UntilDone)
+                sprites.destroy(Tree, effects.ashes, 500)
             }
         }
     }
@@ -792,6 +835,7 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile5`, function (sprite, l
             `)) {
             if (controller.A.isPressed()) {
                 FishCaught = AllFish._pickRandom()
+                music.play(music.melodyPlayable(music.wawawawaa), music.PlaybackMode.UntilDone)
                 if (FishCaught.kind() == SpriteKind.CommonFish) {
                     CommonFishCount += 1
                     if (FishCaught.image.equals(img`
@@ -803,7 +847,7 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile5`, function (sprite, l
                         d d . d d d d d d d . 
                         d . . . d d d d d . . 
                         `)) {
-                        game.splash("You Caught:", "Common fish: Tan Fish")
+                        game.splash("You Caught:", "Tan Fish - Common")
                     } else if (FishCaught.image.equals(img`
                         b . . . b b b b b . . 
                         b b . b b b b b b b . 
@@ -813,9 +857,9 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile5`, function (sprite, l
                         b b . b b b b b b b . 
                         b . . . b b b b b . . 
                         `)) {
-                        game.splash("You Caught:", "Common fish: Grey Fish")
+                        game.splash("You Caught:", "Gray Fish - Common")
                     } else {
-                        game.splash("You Caught:", "Common fish: Red Fish")
+                        game.splash("You Caught:", "Red Fish - Common")
                     }
                 } else if (FishCaught.kind() == SpriteKind.RareFish) {
                     RareFishCount += 1
@@ -828,13 +872,13 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile5`, function (sprite, l
                         4 4 . 4 4 4 4 4 4 4 . 
                         4 . . . 4 4 4 4 4 . . 
                         `)) {
-                        game.splash("You Caught:", "Rare Fish: Orange Fish")
+                        game.splash("You Caught:", "Orange Fish - Rare")
                     } else {
-                        game.splash("You Caught:", "Rare Fish: Cyan Fish")
+                        game.splash("You Caught:", "Cyan Fish - Rare")
                     }
                 } else {
                     EpicFishCount += 1
-                    game.splash("You Caught:", "Epic fish: Pink Fish")
+                    game.splash("You Caught:", "Pink Fish - Epic")
                 }
             }
         }
@@ -1048,7 +1092,9 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.ClosedChest, function (sprite, o
 let Peoples: Sprite = null
 let FishCaught: Sprite = null
 let AskYorN = 0
+let Tree: Sprite = null
 let Chest: Sprite = null
+let Stone: Sprite = null
 let StoneCount = 0
 let PlankCount = 0
 let EpicFishCount = 0
@@ -1471,7 +1517,7 @@ EpicFishCount = 0
 PlankCount = 0
 StoneCount = 0
 tiles.setCurrentTilemap(tilemap`level2`)
-tiles.placeOnTile(Player1, tiles.getTileLocation(13, 7))
+tiles.placeOnTile(Player1, tiles.getTileLocation(18, 16))
 game.splash("Walk around and explore")
 controller.moveSprite(Player1)
 scene.cameraFollowSprite(Player1)
