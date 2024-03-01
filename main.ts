@@ -82,7 +82,7 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
         . . . . . f f f b b f . . . . . 
         `],
     100,
-    false
+    true
     )
 })
 scene.onHitWall(SpriteKind.Player, function (sprite, location) {
@@ -280,6 +280,10 @@ scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.floorLightMoss, function 
         tiles.placeOnTile(Chest, value6)
     }
     tiles.placeOnTile(Player1, tiles.getTileLocation(19, 8))
+})
+info.onScore(1000000, function () {
+    game.gameOver(true)
+    game.setGameOverEffect(true, effects.confetti)
 })
 scene.onOverlapTile(SpriteKind.Player, sprites.castle.tilePath2, function (sprite, location) {
     sprites.destroyAllSpritesOfKind(SpriteKind.Seller)
@@ -490,52 +494,10 @@ controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
         . . . f f f b b f f f . . . . . 
         `],
     100,
-    false
+    true
     )
 })
-controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
-    animation.runImageAnimation(
-    Player1,
-    [img`
-        . . . . . . f f f f 4 4 f . . . 
-        . . . . f f b f 5 4 5 5 4 f . . 
-        . . . f b 3 3 e 4 5 5 5 5 f . . 
-        . . f b 3 3 3 3 e 4 4 4 e f . . 
-        . . f 3 3 3 3 3 3 3 3 3 3 f . . 
-        . . f 3 3 3 3 e b 3 e e 3 3 f . 
-        . . f 3 3 3 3 f f e e e 3 3 f . 
-        . . f b b b b f b f e e e 3 f . 
-        . . f b b b b e 1 f 4 4 e f . . 
-        . f f b b b b f 4 4 4 4 f . . . 
-        . f b b b b f f f e e e f . . . 
-        . . f b b f 4 4 e d d d f . . . 
-        . . . f f e 4 4 e d d d f . . . 
-        . . . . f b e e b d b d b f . . 
-        . . . . f f d 1 d 1 d 1 f f . . 
-        . . . . . . f f b b f f . . . . 
-        `,img`
-        . . . . . . . . . . . . . . . . 
-        . . . . . . f f f f 4 4 f . . . 
-        . . . . f f b f 5 4 5 5 4 f . . 
-        . . . f b 3 3 e 4 5 5 5 5 f . . 
-        . . f b 3 3 3 3 e 4 4 4 e f . . 
-        . . f 3 3 3 3 3 3 3 3 3 3 3 f . 
-        . . f 3 3 3 3 e b 3 e e 3 3 f . 
-        . . f 3 3 3 3 f f e e e 3 3 f . 
-        . f f b b b b f b f e e e f . . 
-        . f b b b b b e 1 f 4 4 e . . . 
-        . f b b b b b f 4 4 4 4 f . . . 
-        . . f b b b 4 4 e d d d f . . . 
-        . . . f f f 4 4 e d d d f . . . 
-        . . . f b b e e b b d d d f . . 
-        . . . . f b d d 1 d 1 d b f . . 
-        . . . . . f f f b b f f f . . . 
-        `],
-    100,
-    false
-    )
-})
-scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.floorLight1, function (sprite, location) {
+scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile18`, function (sprite, location) {
     sprites.destroyAllSpritesOfKind(SpriteKind.ClosedChest)
     sprites.destroyAllSpritesOfKind(SpriteKind.Seller)
     sprites.destroyAllSpritesOfKind(SpriteKind.OpenChest)
@@ -664,6 +626,48 @@ scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.floorLight1, function (sp
     tiles.setCurrentTilemap(tilemap`level1`)
     tiles.placeOnTile(Player1, tiles.getTileLocation(23, 44))
 })
+controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
+    animation.runImageAnimation(
+    Player1,
+    [img`
+        . . . . . . f f f f 4 4 f . . . 
+        . . . . f f b f 5 4 5 5 4 f . . 
+        . . . f b 3 3 e 4 5 5 5 5 f . . 
+        . . f b 3 3 3 3 e 4 4 4 e f . . 
+        . . f 3 3 3 3 3 3 3 3 3 3 f . . 
+        . . f 3 3 3 3 e b 3 e e 3 3 f . 
+        . . f 3 3 3 3 f f e e e 3 3 f . 
+        . . f b b b b f b f e e e 3 f . 
+        . . f b b b b e 1 f 4 4 e f . . 
+        . f f b b b b f 4 4 4 4 f . . . 
+        . f b b b b f f f e e e f . . . 
+        . . f b b f 4 4 e d d d f . . . 
+        . . . f f e 4 4 e d d d f . . . 
+        . . . . f b e e b d b d b f . . 
+        . . . . f f d 1 d 1 d 1 f f . . 
+        . . . . . . f f b b f f . . . . 
+        `,img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . f f f f 4 4 f . . . 
+        . . . . f f b f 5 4 5 5 4 f . . 
+        . . . f b 3 3 e 4 5 5 5 5 f . . 
+        . . f b 3 3 3 3 e 4 4 4 e f . . 
+        . . f 3 3 3 3 3 3 3 3 3 3 3 f . 
+        . . f 3 3 3 3 e b 3 e e 3 3 f . 
+        . . f 3 3 3 3 f f e e e 3 3 f . 
+        . f f b b b b f b f e e e f . . 
+        . f b b b b b e 1 f 4 4 e . . . 
+        . f b b b b b f 4 4 4 4 f . . . 
+        . . f b b b 4 4 e d d d f . . . 
+        . . . f f f 4 4 e d d d f . . . 
+        . . . f b b e e b b d d d f . . 
+        . . . . f b d d 1 d 1 d b f . . 
+        . . . . . f f f b b f f f . . . 
+        `],
+    100,
+    true
+    )
+})
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Seller, function (sprite, otherSprite) {
     if (otherSprite.tileKindAt(TileDirection.Bottom, assets.tile`myTile1`)) {
         AskYorN = game.askForNumber("Do you want to sell the fish you have? Y(1) or N(2)", 1)
@@ -676,7 +680,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Seller, function (sprite, otherS
         }
     } else if (otherSprite.tileKindAt(TileDirection.Left, assets.tile`myTile14`)) {
         AskYorN = game.askForNumber("Buy a random tool for $20? Y(1)/N(2)", 1)
-        tiles.placeOnTile(Player1, tiles.getTileLocation(11, 3))
+        tiles.placeOnTile(Player1, tiles.getTileLocation(18, 4))
         if (AskYorN == 1) {
             if (KeepingScore > 20 || KeepingScore == 20) {
                 KeepingScore += -20
@@ -723,7 +727,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Seller, function (sprite, otherS
                 }
                 pause(100)
             } else {
-                tiles.placeOnTile(Player1, tiles.getTileLocation(11, 3))
+                tiles.placeOnTile(Player1, tiles.getTileLocation(18, 4))
                 game.splash("You don't have $20")
                 pause(100)
             }
@@ -741,6 +745,32 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Seller, function (sprite, otherS
         if (AskYorN == 1) {
             KeepingScore += StoneCount * 6
             StoneCount = 0
+        }
+    } else if (otherSprite.tileKindAt(TileDirection.Left, sprites.castle.shrub)) {
+        AskYorN = game.askForNumber("Buy bait($1)? Type the amount you want N(0)", 2)
+        tiles.placeOnTile(Player1, tiles.getTileLocation(12, 3))
+        if (AskYorN == 0) {
+            tiles.placeOnTile(Player1, tiles.getTileLocation(12, 3))
+        } else {
+            if (KeepingScore > AskYorN || KeepingScore == AskYorN) {
+                KeepingScore += -1 * AskYorN
+                BaitCount += AskYorN
+                game.splash("You can fish now!")
+            } else {
+                game.splash("You don't have enough")
+            }
+        }
+    } else if (otherSprite.tileKindAt(TileDirection.Bottom, sprites.dungeon.floorDark5)) {
+        AskYorN = game.askForNumber("To go through pay $5000 Y(1)/N(2)", 1)
+        tiles.placeOnTile(Player1, tiles.getTileLocation(20, 8))
+        if (AskYorN == 1) {
+            if (KeepingScore > 5000 || KeepingScore == 5000) {
+                KeepingScore += -5000
+                tiles.setWallAt(tiles.getTileLocation(22, 8), false)
+                game.splash("Walk through the door now")
+            } else {
+                game.splash("You don't have enough")
+            }
         }
     }
 })
@@ -817,7 +847,7 @@ controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
         . . . . . f b b f f f . . . . . 
         `],
     100,
-    false
+    true
     )
 })
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile5`, function (sprite, location) {
@@ -834,51 +864,55 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile5`, function (sprite, l
             e 1 1 1 1 1 1 1 1 
             `)) {
             if (controller.A.isPressed()) {
-                FishCaught = AllFish._pickRandom()
-                music.play(music.melodyPlayable(music.wawawawaa), music.PlaybackMode.UntilDone)
-                if (FishCaught.kind() == SpriteKind.CommonFish) {
-                    CommonFishCount += 1
-                    if (FishCaught.image.equals(img`
-                        d . . . d d d d d . . 
-                        d d . d d d d d d d . 
-                        d d d d d d d d f d d 
-                        d d d d d d d d d d d 
-                        d d d d d d d d d d d 
-                        d d . d d d d d d d . 
-                        d . . . d d d d d . . 
-                        `)) {
-                        game.splash("You Caught:", "Tan Fish - Common")
-                    } else if (FishCaught.image.equals(img`
-                        b . . . b b b b b . . 
-                        b b . b b b b b b b . 
-                        b b b b b b b b f b b 
-                        b b b b b b b b b b b 
-                        b b b b b b b b b b b 
-                        b b . b b b b b b b . 
-                        b . . . b b b b b . . 
-                        `)) {
-                        game.splash("You Caught:", "Gray Fish - Common")
-                    } else {
-                        game.splash("You Caught:", "Red Fish - Common")
-                    }
-                } else if (FishCaught.kind() == SpriteKind.RareFish) {
-                    RareFishCount += 1
-                    if (FishCaught.image.equals(img`
-                        4 . . . 4 4 4 4 4 . . 
-                        4 4 . 4 4 4 4 4 4 4 . 
-                        4 4 4 4 4 4 4 4 f 4 4 
-                        4 4 4 4 4 4 4 4 4 4 4 
-                        4 4 4 4 4 4 4 4 4 4 4 
-                        4 4 . 4 4 4 4 4 4 4 . 
-                        4 . . . 4 4 4 4 4 . . 
-                        `)) {
-                        game.splash("You Caught:", "Orange Fish - Rare")
-                    } else {
-                        game.splash("You Caught:", "Cyan Fish - Rare")
-                    }
+                if (BaitCount == 0) {
+                    game.splash("You don't have any bait", "Go buy some")
+                    tiles.placeOnTile(Player1, tiles.getTileLocation(30, 14))
                 } else {
-                    EpicFishCount += 1
-                    game.splash("You Caught:", "Pink Fish - Epic")
+                    FishCaught = AllFish._pickRandom()
+                    if (FishCaught.kind() == SpriteKind.CommonFish) {
+                        CommonFishCount += 1
+                        if (FishCaught.image.equals(img`
+                            d . . . d d d d d . . 
+                            d d . d d d d d d d . 
+                            d d d d d d d d f d d 
+                            d d d d d d d d d d d 
+                            d d d d d d d d d d d 
+                            d d . d d d d d d d . 
+                            d . . . d d d d d . . 
+                            `)) {
+                            game.splash("You Caught:", "Tan Fish - Common")
+                        } else if (FishCaught.image.equals(img`
+                            b . . . b b b b b . . 
+                            b b . b b b b b b b . 
+                            b b b b b b b b f b b 
+                            b b b b b b b b b b b 
+                            b b b b b b b b b b b 
+                            b b . b b b b b b b . 
+                            b . . . b b b b b . . 
+                            `)) {
+                            game.splash("You Caught:", "Gray Fish - Common")
+                        } else {
+                            game.splash("You Caught:", "Red Fish - Common")
+                        }
+                    } else if (FishCaught.kind() == SpriteKind.RareFish) {
+                        RareFishCount += 1
+                        if (FishCaught.image.equals(img`
+                            4 . . . 4 4 4 4 4 . . 
+                            4 4 . 4 4 4 4 4 4 4 . 
+                            4 4 4 4 4 4 4 4 f 4 4 
+                            4 4 4 4 4 4 4 4 4 4 4 
+                            4 4 4 4 4 4 4 4 4 4 4 
+                            4 4 . 4 4 4 4 4 4 4 . 
+                            4 . . . 4 4 4 4 4 . . 
+                            `)) {
+                            game.splash("You Caught:", "Orange Fish - Rare")
+                        } else {
+                            game.splash("You Caught:", "Cyan Fish - Rare")
+                        }
+                    } else {
+                        EpicFishCount += 1
+                        game.splash("You Caught:", "Pink Fish - Epic")
+                    }
                 }
             }
         }
@@ -1095,6 +1129,7 @@ let AskYorN = 0
 let Tree: Sprite = null
 let Chest: Sprite = null
 let Stone: Sprite = null
+let BaitCount = 0
 let StoneCount = 0
 let PlankCount = 0
 let EpicFishCount = 0
@@ -1111,6 +1146,7 @@ let Player1: Sprite = null
 let PointValues: number[] = []
 let tilemap2Count = 0
 let KeepingScore = 0
+music.play(music.stringPlayable("B C5 G G - F F D ", 120), music.PlaybackMode.LoopingInBackground)
 KeepingScore = 0
 tilemap2Count = 0
 scene.setBackgroundImage(img`
@@ -1236,11 +1272,11 @@ scene.setBackgroundImage(img`
     7777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777
     `)
 PointValues = [
-4,
-7,
 6,
-4,
-5
+9,
+8,
+6,
+7
 ]
 Player1 = sprites.create(img`
     . . . . . . . f f . . . . . . . 
@@ -1516,9 +1552,10 @@ CommonFishCount = 0
 EpicFishCount = 0
 PlankCount = 0
 StoneCount = 0
-let BaitCount = 0
+BaitCount = 0
 tiles.setCurrentTilemap(tilemap`level2`)
 tiles.placeOnTile(Player1, tiles.getTileLocation(18, 16))
+game.splash("Get $1,000,000 to win", "Your score is your money")
 game.splash("Walk around and explore")
 controller.moveSprite(Player1)
 scene.cameraFollowSprite(Player1)
