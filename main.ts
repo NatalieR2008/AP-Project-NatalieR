@@ -682,7 +682,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Seller, function (sprite, otherS
         AskYorN = game.askForNumber("Buy a random tool for $20? Y(1)/N(2)", 1)
         tiles.placeOnTile(Player1, tiles.getTileLocation(18, 4))
         if (AskYorN == 1) {
-            if (KeepingScore > 20 || KeepingScore == 20) {
+            if (KeepingScore >= 20) {
                 KeepingScore += -20
                 if (Inventory1.image.equals(img`
                     . . . . . . . . . . . . . . . . 
@@ -755,7 +755,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Seller, function (sprite, otherS
             if (KeepingScore > AskYorN || KeepingScore == AskYorN) {
                 KeepingScore += -1 * AskYorN
                 BaitCount += AskYorN
-                game.splash("You can fish now!")
+                game.splash("You have:" + BaitCount + "Bait")
             } else {
                 game.splash("You don't have enough")
             }
@@ -764,7 +764,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Seller, function (sprite, otherS
         AskYorN = game.askForNumber("To go through pay $5000 Y(1)/N(2)", 1)
         tiles.placeOnTile(Player1, tiles.getTileLocation(20, 8))
         if (AskYorN == 1) {
-            if (KeepingScore > 5000 || KeepingScore == 5000) {
+            if (KeepingScore >= 5000) {
                 KeepingScore += -5000
                 tiles.setWallAt(tiles.getTileLocation(22, 8), false)
                 game.splash("Walk through the door now")
@@ -864,11 +864,9 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile5`, function (sprite, l
             e 1 1 1 1 1 1 1 1 
             `)) {
             if (controller.A.isPressed()) {
-                if (BaitCount == 0) {
-                    game.splash("You don't have any bait", "Go buy some")
-                    tiles.placeOnTile(Player1, tiles.getTileLocation(30, 14))
-                } else {
+                if (BaitCount > 0) {
                     FishCaught = AllFish._pickRandom()
+                    BaitCount += -1
                     if (FishCaught.kind() == SpriteKind.CommonFish) {
                         CommonFishCount += 1
                         if (FishCaught.image.equals(img`
@@ -913,6 +911,9 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile5`, function (sprite, l
                         EpicFishCount += 1
                         game.splash("You Caught:", "Pink Fish - Epic")
                     }
+                } else {
+                    tiles.placeOnTile(Player1, tiles.getTileLocation(30, 14))
+                    game.splash("You don't have bait", "Go buy some")
                 }
             }
         }
