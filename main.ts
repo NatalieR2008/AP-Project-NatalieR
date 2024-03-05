@@ -9,6 +9,13 @@ namespace SpriteKind {
     export const OpenChest = SpriteKind.create()
     export const Nature = SpriteKind.create()
 }
+info.onScore(100000, function () {
+    game.gameOver(true)
+    game.setGameOverEffect(true, effects.confetti)
+})
+scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile19`, function (sprite, location) {
+    Fishing(FishesTilemap2, 13, 18)
+})
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.runImageAnimation(
     Player1,
@@ -86,8 +93,8 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     )
 })
 scene.onHitWall(SpriteKind.Player, function (sprite, location) {
-    for (let value5 of sprites.allOfKind(SpriteKind.tools)) {
-        if (value5.image.equals(img`
+    for (let value of sprites.allOfKind(SpriteKind.tools)) {
+        if (value.image.equals(img`
             1 1 1 f f f 1 1 1 
             1 1 1 1 f f f f 1 
             1 1 1 1 1 1 e f 1 
@@ -257,8 +264,10 @@ scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.floorLightMoss, function 
         bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
         `)
     tiles.setCurrentTilemap(tilemap`level3`)
-    SpawnPeople(PeopleTasksImages)
-    for (let value6 of tiles.getTilesByType(sprites.dungeon.floorDarkDiamond)) {
+    tiles.setWallAt(tiles.getTileLocation(22, 8), false)
+    tiles.setTileAt(tiles.getTileLocation(21, 8), sprites.dungeon.floorDark2)
+    SpawnPeople(SellerImages)
+    for (let value of tiles.getTilesByType(sprites.dungeon.floorDarkDiamond)) {
         Chest = sprites.create(img`
             . b b b b b b b b b b b b b b . 
             b e 4 4 4 4 4 4 4 4 4 4 4 4 4 b 
@@ -277,13 +286,9 @@ scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.floorLightMoss, function 
             b b b b b b b b b b b b b b b b 
             . b b . . . . . . . . . . b b . 
             `, SpriteKind.OpenChest)
-        tiles.placeOnTile(Chest, value6)
+        tiles.placeOnTile(Chest, value)
     }
     tiles.placeOnTile(Player1, tiles.getTileLocation(19, 8))
-})
-info.onScore(1000000, function () {
-    game.gameOver(true)
-    game.setGameOverEffect(true, effects.confetti)
 })
 scene.onOverlapTile(SpriteKind.Player, sprites.castle.tilePath2, function (sprite, location) {
     sprites.destroyAllSpritesOfKind(SpriteKind.Seller)
@@ -415,45 +420,25 @@ scene.onOverlapTile(SpriteKind.Player, sprites.castle.tilePath2, function (sprit
     tiles.placeOnTile(Player1, tiles.getTileLocation(13, 13))
 })
 scene.onOverlapTile(SpriteKind.Player, sprites.castle.saplingPine, function (sprite, location) {
-    for (let value4 of sprites.allOfKind(SpriteKind.tools)) {
-        if (value4.image.equals(img`
-            1 1 1 1 1 1 1 1 1 
-            1 1 1 1 1 f f 1 1 
-            1 1 1 1 f f e f 1 
-            1 1 1 f f e f f f 
-            1 1 1 1 e f f f f 
-            1 1 1 e 1 1 f f f 
-            1 1 e 1 1 1 1 f 1 
-            1 e 1 1 1 1 1 1 1 
-            e 1 1 1 1 1 1 1 1 
-            `)) {
-            if (controller.A.isPressed()) {
-                PlankCount += 1
-                tiles.setTileAt(location, sprites.castle.tileGrass1)
-                Tree = sprites.create(img`
-                    . . . . . . . c c . . . . . . . 
-                    . . . . c c c 6 5 c 6 6 . . . . 
-                    . . . . c 6 c 5 5 c 7 6 . . . . 
-                    . . . 6 c c 7 5 5 7 c 6 6 . . . 
-                    . . c c 7 7 7 7 7 5 7 7 c 6 . . 
-                    . 6 6 6 c 6 7 7 7 7 6 c c 6 6 . 
-                    c 7 7 7 6 c 7 c 6 7 6 7 7 7 7 6 
-                    c c c 6 6 6 c 6 6 6 6 7 7 6 6 6 
-                    . c c 7 6 6 6 6 6 7 7 7 7 c 6 . 
-                    . c 7 7 6 6 7 6 6 7 7 6 7 7 c . 
-                    . c c c c 7 7 6 f 7 7 c c c c . 
-                    . . . . c 7 c f f c 7 c . . . . 
-                    . . . . . 6 f e e e c . . . . . 
-                    . . . . . e e e e e e . . . . . 
-                    . . . . e e . e e . e e . . . . 
-                    . . . . . . . e e . . . . . . . 
-                    `, SpriteKind.Nature)
-                tiles.placeOnTile(Tree, location)
-                music.play(music.melodyPlayable(music.smallCrash), music.PlaybackMode.UntilDone)
-                sprites.destroy(Tree, effects.ashes, 500)
-            }
-        }
-    }
+    Tree1 = sprites.create(img`
+        . . . . . . . c c . . . . . . . 
+        . . . . c c c 6 5 c 6 6 . . . . 
+        . . . . c 6 c 5 5 c 7 6 . . . . 
+        . . . 6 c c 7 5 5 7 c 6 6 . . . 
+        . . c c 7 7 7 7 7 5 7 7 c 6 . . 
+        . 6 6 6 c 6 7 7 7 7 6 c c 6 6 . 
+        c 7 7 7 6 c 7 c 6 7 6 7 7 7 7 6 
+        c c c 6 6 6 c 6 6 6 6 7 7 6 6 6 
+        . c c 7 6 6 6 6 6 7 7 7 7 c 6 . 
+        . c 7 7 6 6 7 6 6 7 7 6 7 7 c . 
+        . c c c c 7 7 6 f 7 7 c c c c . 
+        . . . . c 7 c f f c 7 c . . . . 
+        . . . . . 6 f e e e c . . . . . 
+        . . . . . e e e e e e . . . . . 
+        . . . . e e . e e . e e . . . . 
+        . . . . . . . e e . . . . . . . 
+        `, SpriteKind.Nature)
+    CuttingDownTree(Tree1, location.column, location.row, sprites.castle.tileGrass1)
 })
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.runImageAnimation(
@@ -502,130 +487,221 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile18`, function (sprite, 
     sprites.destroyAllSpritesOfKind(SpriteKind.Seller)
     sprites.destroyAllSpritesOfKind(SpriteKind.OpenChest)
     scene.setBackgroundImage(img`
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
+        6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
         `)
     tiles.setCurrentTilemap(tilemap`level1`)
-    tiles.placeOnTile(Player1, tiles.getTileLocation(23, 44))
+    tiles.placeOnTile(Player1, tiles.getTileLocation(1, 13))
 })
+function Fishing (FishTypes: Sprite[], columm: number, row: number) {
+    for (let value of sprites.allOfKind(SpriteKind.tools)) {
+        if (value.image.equals(img`
+            1 1 1 1 1 1 1 1 1 
+            1 1 1 1 1 1 1 1 1 
+            1 1 1 1 1 1 e 1 1 
+            1 1 1 1 1 e 1 d 1 
+            1 1 1 1 e 1 1 d 1 
+            1 1 1 e 1 1 1 d 1 
+            1 1 e 1 1 1 d 1 1 
+            1 e 1 1 1 1 1 f 1 
+            e 1 1 1 1 1 1 1 1 
+            `)) {
+            if (controller.A.isPressed()) {
+                if (BaitCount > 0) {
+                    FishCaught = FishTypes._pickRandom()
+                    BaitCount += -1
+                    if (FishCaught.kind() == SpriteKind.CommonFish) {
+                        CommonFishCount += 1
+                        if (FishCaught.image.equals(img`
+                            d . . . d d d d d . . 
+                            d d . d d d d d d d . 
+                            d d d d d d d d f d d 
+                            d d d d d d d d d d d 
+                            d d d d d d d d d d d 
+                            d d . d d d d d d d . 
+                            d . . . d d d d d . . 
+                            `)) {
+                            game.splash("You Caught:", "Tan Fish - Common")
+                        } else if (FishCaught.image.equals(img`
+                            b . . . b b b b b . . 
+                            b b . b b b b b b b . 
+                            b b b b b b b b f b b 
+                            b b b b b b b b b b b 
+                            b b b b b b b b b b b 
+                            b b . b b b b b b b . 
+                            b . . . b b b b b . . 
+                            `)) {
+                            game.splash("You Caught:", "Gray Fish - Common")
+                        } else {
+                            game.splash("You Caught:", "Red Fish - Common")
+                        }
+                    } else if (FishCaught.kind() == SpriteKind.RareFish) {
+                        RareFishCount += 1
+                        if (FishCaught.image.equals(img`
+                            4 . . . 4 4 4 4 4 . . 
+                            4 4 . 4 4 4 4 4 4 4 . 
+                            4 4 4 4 4 4 4 4 f 4 4 
+                            4 4 4 4 4 4 4 4 4 4 4 
+                            4 4 4 4 4 4 4 4 4 4 4 
+                            4 4 . 4 4 4 4 4 4 4 . 
+                            4 . . . 4 4 4 4 4 . . 
+                            `)) {
+                            game.splash("You Caught:", "Orange Fish - Rare")
+                        } else if (FishCaught.image.equals(img`
+                            8 . . . 8 8 8 8 8 . . 
+                            8 8 . 8 8 8 8 8 8 8 . 
+                            8 8 8 8 8 8 8 8 f 8 8 
+                            8 8 8 8 8 8 8 8 8 8 8 
+                            8 8 8 8 8 8 8 8 8 8 8 
+                            8 8 . 8 8 8 8 8 8 8 . 
+                            8 . . . 8 8 8 8 8 . . 
+                            `)) {
+                            game.splash("You Caught:", "Blue Fish - Rare")
+                        } else {
+                            game.splash("You Caught:", "Cyan Fish - Rare")
+                        }
+                    } else {
+                        EpicFishCount += 1
+                        if (FishCaught.image.equals(img`
+                            3 . . . 3 3 3 3 3 . . 
+                            3 3 . 3 3 3 3 3 3 3 . 
+                            3 3 3 3 3 3 3 3 f 3 3 
+                            3 3 3 3 3 3 3 3 3 3 3 
+                            3 3 3 3 3 3 3 3 3 3 3 
+                            3 3 . 3 3 3 3 3 3 3 . 
+                            3 . . . 3 3 3 3 3 . . 
+                            `)) {
+                            game.splash("You Caught:", "Pink Fish - Epic")
+                        } else {
+                            game.splash("You Caught:", "Purple Fish - Epic")
+                        }
+                    }
+                } else {
+                    tiles.placeOnTile(Player1, tiles.getTileLocation(columm, row))
+                    game.splash("You don't have bait", "Go buy some")
+                }
+            }
+        }
+    }
+}
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.runImageAnimation(
     Player1,
@@ -670,7 +746,7 @@ controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Seller, function (sprite, otherSprite) {
     if (otherSprite.tileKindAt(TileDirection.Bottom, assets.tile`myTile1`)) {
-        AskYorN = game.askForNumber("Do you want to sell the fish you have? Y(1) or N(2)", 1)
+        AskYorN = game.askForNumber("Do you want to sell the fish you have? Y(1)/N(2)", 1)
         tiles.placeOnTile(Player1, tiles.getTileLocation(5, 3))
         if (AskYorN == 1) {
             KeepingScore += CommonFishCount * 3 + (RareFishCount * 10 + EpicFishCount * 15)
@@ -755,17 +831,17 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Seller, function (sprite, otherS
             if (KeepingScore > AskYorN || KeepingScore == AskYorN) {
                 KeepingScore += -1 * AskYorN
                 BaitCount += AskYorN
-                game.splash("You have:" + BaitCount + "Bait")
+                game.splash("You have:" + BaitCount + " Bait")
             } else {
                 game.splash("You don't have enough")
             }
         }
     } else if (otherSprite.tileKindAt(TileDirection.Bottom, sprites.dungeon.floorDark5)) {
-        AskYorN = game.askForNumber("To go through pay $5000 Y(1)/N(2)", 1)
+        AskYorN = game.askForNumber("To go through pay $1000 Y(1)/N(2)", 1)
         tiles.placeOnTile(Player1, tiles.getTileLocation(20, 8))
         if (AskYorN == 1) {
-            if (KeepingScore >= 5000) {
-                KeepingScore += -5000
+            if (KeepingScore >= 1000) {
+                KeepingScore += -1000
                 tiles.setWallAt(tiles.getTileLocation(22, 8), false)
                 game.splash("Walk through the door now")
             } else {
@@ -851,73 +927,7 @@ controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     )
 })
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile5`, function (sprite, location) {
-    for (let value3 of sprites.allOfKind(SpriteKind.tools)) {
-        if (value3.image.equals(img`
-            1 1 1 1 1 1 1 1 1 
-            1 1 1 1 1 1 1 1 1 
-            1 1 1 1 1 1 e 1 1 
-            1 1 1 1 1 e 1 d 1 
-            1 1 1 1 e 1 1 d 1 
-            1 1 1 e 1 1 1 d 1 
-            1 1 e 1 1 1 d 1 1 
-            1 e 1 1 1 1 1 f 1 
-            e 1 1 1 1 1 1 1 1 
-            `)) {
-            if (controller.A.isPressed()) {
-                if (BaitCount > 0) {
-                    FishCaught = AllFish._pickRandom()
-                    BaitCount += -1
-                    if (FishCaught.kind() == SpriteKind.CommonFish) {
-                        CommonFishCount += 1
-                        if (FishCaught.image.equals(img`
-                            d . . . d d d d d . . 
-                            d d . d d d d d d d . 
-                            d d d d d d d d f d d 
-                            d d d d d d d d d d d 
-                            d d d d d d d d d d d 
-                            d d . d d d d d d d . 
-                            d . . . d d d d d . . 
-                            `)) {
-                            game.splash("You Caught:", "Tan Fish - Common")
-                        } else if (FishCaught.image.equals(img`
-                            b . . . b b b b b . . 
-                            b b . b b b b b b b . 
-                            b b b b b b b b f b b 
-                            b b b b b b b b b b b 
-                            b b b b b b b b b b b 
-                            b b . b b b b b b b . 
-                            b . . . b b b b b . . 
-                            `)) {
-                            game.splash("You Caught:", "Gray Fish - Common")
-                        } else {
-                            game.splash("You Caught:", "Red Fish - Common")
-                        }
-                    } else if (FishCaught.kind() == SpriteKind.RareFish) {
-                        RareFishCount += 1
-                        if (FishCaught.image.equals(img`
-                            4 . . . 4 4 4 4 4 . . 
-                            4 4 . 4 4 4 4 4 4 4 . 
-                            4 4 4 4 4 4 4 4 f 4 4 
-                            4 4 4 4 4 4 4 4 4 4 4 
-                            4 4 4 4 4 4 4 4 4 4 4 
-                            4 4 . 4 4 4 4 4 4 4 . 
-                            4 . . . 4 4 4 4 4 . . 
-                            `)) {
-                            game.splash("You Caught:", "Orange Fish - Rare")
-                        } else {
-                            game.splash("You Caught:", "Cyan Fish - Rare")
-                        }
-                    } else {
-                        EpicFishCount += 1
-                        game.splash("You Caught:", "Pink Fish - Epic")
-                    }
-                } else {
-                    tiles.placeOnTile(Player1, tiles.getTileLocation(30, 14))
-                    game.splash("You don't have bait", "Go buy some")
-                }
-            }
-        }
-    }
+    Fishing(FishesTilemap1, 30, 14)
 })
 scene.onOverlapTile(SpriteKind.Player, sprites.castle.tilePath8, function (sprite, location) {
     scene.setBackgroundImage(img`
@@ -1045,7 +1055,7 @@ scene.onOverlapTile(SpriteKind.Player, sprites.castle.tilePath8, function (sprit
     tiles.setCurrentTilemap(tilemap`level3`)
     tiles.placeOnTile(Player1, tiles.getTileLocation(8, 12))
     SpawnPeople(SellerImages)
-    for (let value6 of tiles.getTilesByType(sprites.dungeon.floorDarkDiamond)) {
+    for (let value of tiles.getTilesByType(sprites.dungeon.floorDarkDiamond)) {
         if (tilemap2Count == 0) {
             Chest = sprites.create(img`
                 . . b b b b b b b b b b b b . . 
@@ -1065,7 +1075,7 @@ scene.onOverlapTile(SpriteKind.Player, sprites.castle.tilePath8, function (sprit
                 b b b b b b b b b b b b b b b b 
                 . b b . . . . . . . . . . b b . 
                 `, SpriteKind.ClosedChest)
-            tiles.placeOnTile(Chest, value6)
+            tiles.placeOnTile(Chest, value)
         } else {
             Chest = sprites.create(img`
                 . b b b b b b b b b b b b b b . 
@@ -1085,11 +1095,34 @@ scene.onOverlapTile(SpriteKind.Player, sprites.castle.tilePath8, function (sprit
                 b b b b b b b b b b b b b b b b 
                 . b b . . . . . . . . . . b b . 
                 `, SpriteKind.OpenChest)
-            tiles.placeOnTile(Chest, value6)
+            tiles.placeOnTile(Chest, value)
         }
     }
     tilemap2Count += 1
 })
+function CuttingDownTree (TreeSprite: Sprite, LocationColumm: number, LocationRow: number, NewTile: Image) {
+    for (let value of sprites.allOfKind(SpriteKind.tools)) {
+        if (value.image.equals(img`
+            1 1 1 1 1 1 1 1 1 
+            1 1 1 1 1 f f 1 1 
+            1 1 1 1 f f e f 1 
+            1 1 1 f f e f f f 
+            1 1 1 1 e f f f f 
+            1 1 1 e 1 1 f f f 
+            1 1 e 1 1 1 1 f 1 
+            1 e 1 1 1 1 1 1 1 
+            e 1 1 1 1 1 1 1 1 
+            `)) {
+            if (controller.A.isPressed()) {
+                tiles.setTileAt(tiles.getTileLocation(LocationColumm, LocationRow), NewTile)
+                tiles.placeOnTile(TreeSprite, tiles.getTileLocation(LocationColumm, LocationRow))
+                music.play(music.melodyPlayable(music.thump), music.PlaybackMode.UntilDone)
+                sprites.destroy(TreeSprite, effects.ashes, 500)
+                PlankCount += 1
+            }
+        }
+    }
+}
 function SpawnPeople (ImageList: Image[]) {
     for (let value of tiles.getTilesByType(sprites.dungeon.collectibleInsignia)) {
         Peoples = sprites.create(ImageList._pickRandom(), SpriteKind.Seller)
@@ -1124,10 +1157,32 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.ClosedChest, function (sprite, o
     KeepingScore += PointValues._pickRandom()
     game.splash("You have:", "$" + KeepingScore)
 })
+scene.onOverlapTile(SpriteKind.Player, sprites.castle.saplingOak, function (sprite, location) {
+    Tree2 = sprites.create(img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . c c c c 6 . . . . . 
+        . . . . c c 6 7 7 5 5 6 6 . . . 
+        . . c c 6 6 6 6 7 5 5 7 c c . . 
+        . c 6 6 6 7 7 7 7 7 7 5 6 c c . 
+        . c 6 6 7 7 7 5 7 6 7 7 7 6 c c 
+        c 6 6 7 7 6 7 7 7 6 7 7 6 6 6 c 
+        c c 6 6 6 7 6 7 6 6 6 6 5 7 6 c 
+        c c c c 6 7 7 6 7 7 7 6 7 6 6 c 
+        . c c 6 6 6 6 c 6 6 6 6 6 c c c 
+        . c c 6 6 c 6 6 c 6 c 6 6 c c . 
+        . . c c f f 6 6 c f f c c f . . 
+        . . . . c f c c c f c f f . . . 
+        . . . . . 4 f f f c . e . . . . 
+        . . . . . . e e e . . 4 . . . . 
+        . . . . . . . e e . e . . . . . 
+        `, SpriteKind.Nature)
+    CuttingDownTree(Tree2, location.column, location.row, sprites.castle.tileDarkGrass3)
+})
+let Tree2: Sprite = null
 let Peoples: Sprite = null
-let FishCaught: Sprite = null
 let AskYorN = 0
-let Tree: Sprite = null
+let FishCaught: Sprite = null
+let Tree1: Sprite = null
 let Chest: Sprite = null
 let Stone: Sprite = null
 let BaitCount = 0
@@ -1139,9 +1194,9 @@ let RareFishCount = 0
 let Inventory3: Sprite = null
 let Inventory2: Sprite = null
 let Inventory1: Sprite = null
-let AllFish: Sprite[] = []
+let FishesTilemap2: Sprite[] = []
+let FishesTilemap1: Sprite[] = []
 let ToolsImagesList: Image[] = []
-let PeopleTasksImages: Image[] = []
 let SellerImages: Image[] = []
 let Player1: Sprite = null
 let PointValues: number[] = []
@@ -1349,7 +1404,7 @@ SellerImages = [img`
     . . . f f f f f f . . . . 
     . . . f f . . f f . . . . 
     `]
-PeopleTasksImages = [img`
+let PeopleTasksImages = [img`
     . . . . . . f f f f . . . . . . 
     . . . . f f f 2 2 f f f . . . . 
     . . . f f f 2 2 2 2 f f f . . . 
@@ -1477,6 +1532,15 @@ let CyanFish = sprites.create(img`
     6 6 . 6 6 6 6 6 6 6 . 
     6 . . . 6 6 6 6 6 . . 
     `, SpriteKind.RareFish)
+let BlueFish = sprites.create(img`
+    8 . . . 8 8 8 8 8 . . 
+    8 8 . 8 8 8 8 8 8 8 . 
+    8 8 8 8 8 8 8 8 f 8 8 
+    8 8 8 8 8 8 8 8 8 8 8 
+    8 8 8 8 8 8 8 8 8 8 8 
+    8 8 . 8 8 8 8 8 8 8 . 
+    8 . . . 8 8 8 8 8 . . 
+    `, SpriteKind.RareFish)
 let PinkFish = sprites.create(img`
     3 . . . 3 3 3 3 3 . . 
     3 3 . 3 3 3 3 3 3 3 . 
@@ -1486,13 +1550,28 @@ let PinkFish = sprites.create(img`
     3 3 . 3 3 3 3 3 3 3 . 
     3 . . . 3 3 3 3 3 . . 
     `, SpriteKind.EpicFish)
-AllFish = [
+let PurpleFish = sprites.create(img`
+    a . . . a a a a a . . 
+    a a . a a a a a a a . 
+    a a a a a a a a f a a 
+    a a a a a a a a a a a 
+    a a a a a a a a a a a 
+    a a . a a a a a a a . 
+    a . . . a a a a a . . 
+    `, SpriteKind.EpicFish)
+FishesTilemap1 = [
 GrayFish,
-CyanFish,
-OrangeFish,
-PinkFish,
+TanFish,
 RedFish,
-TanFish
+OrangeFish,
+CyanFish
+]
+FishesTilemap2 = [
+OrangeFish,
+CyanFish,
+BlueFish,
+PinkFish,
+PurpleFish
 ]
 Inventory1 = sprites.create(img`
     . . . . . . . . . . . . . . . . 
@@ -1556,7 +1635,7 @@ StoneCount = 0
 BaitCount = 0
 tiles.setCurrentTilemap(tilemap`level2`)
 tiles.placeOnTile(Player1, tiles.getTileLocation(18, 16))
-game.splash("Get $1,000,000 to win", "Your score is your money")
+game.splash("Get $500,000 to win", "Your score is your money")
 game.splash("Walk around and explore")
 controller.moveSprite(Player1)
 scene.cameraFollowSprite(Player1)
