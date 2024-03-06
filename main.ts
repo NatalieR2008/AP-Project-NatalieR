@@ -266,7 +266,7 @@ scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.floorLightMoss, function 
     tiles.setCurrentTilemap(tilemap`level3`)
     tiles.setWallAt(tiles.getTileLocation(22, 8), false)
     tiles.setTileAt(tiles.getTileLocation(21, 8), sprites.dungeon.floorDark2)
-    SpawnPeople(SellerImages, sprites.dungeon.floorLight0)
+    SpawnPeople(SellerImages, sprites.dungeon.floorDark2)
     for (let value of tiles.getTilesByType(sprites.dungeon.floorDarkDiamond)) {
         Chest = sprites.create(img`
             . b b b b b b b b b b b b b b . 
@@ -420,7 +420,7 @@ scene.onOverlapTile(SpriteKind.Player, sprites.castle.tilePath2, function (sprit
     tiles.placeOnTile(Player1, tiles.getTileLocation(13, 13))
 })
 scene.onOverlapTile(SpriteKind.Player, sprites.castle.saplingPine, function (sprite, location) {
-    Tree1 = sprites.create(img`
+    UsingAxe(location.column, location.row, sprites.castle.tileGrass1, img`
         . . . . . . . c c . . . . . . . 
         . . . . c c c 6 5 c 6 6 . . . . 
         . . . . c 6 c 5 5 c 7 6 . . . . 
@@ -437,8 +437,7 @@ scene.onOverlapTile(SpriteKind.Player, sprites.castle.saplingPine, function (spr
         . . . . . e e e e e e . . . . . 
         . . . . e e . e e . e e . . . . 
         . . . . . . . e e . . . . . . . 
-        `, SpriteKind.Nature)
-    CuttingDownTree(Tree1, location.column, location.row, sprites.castle.tileGrass1)
+        `)
 })
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.runImageAnimation(
@@ -926,6 +925,30 @@ controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     true
     )
 })
+function UsingAxe (LocationColumm: number, LocationRow: number, NewTile: Image, TreeImage: Image) {
+    for (let value of sprites.allOfKind(SpriteKind.tools)) {
+        if (value.image.equals(img`
+            1 1 1 1 1 1 1 1 1 
+            1 1 1 1 1 f f 1 1 
+            1 1 1 1 f f e f 1 
+            1 1 1 f f e f f f 
+            1 1 1 1 e f f f f 
+            1 1 1 e 1 1 f f f 
+            1 1 e 1 1 1 1 f 1 
+            1 e 1 1 1 1 1 1 1 
+            e 1 1 1 1 1 1 1 1 
+            `)) {
+            if (controller.A.isPressed()) {
+                Tree = sprites.create(TreeImage, SpriteKind.Nature)
+                tiles.setTileAt(tiles.getTileLocation(LocationColumm, LocationRow), NewTile)
+                tiles.placeOnTile(Tree, tiles.getTileLocation(LocationColumm, LocationRow))
+                music.play(music.melodyPlayable(music.thump), music.PlaybackMode.UntilDone)
+                sprites.destroy(Tree, effects.ashes, 500)
+                PlankCount += 1
+            }
+        }
+    }
+}
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile5`, function (sprite, location) {
     Fishing(FishesTilemap1, 30, 14)
 })
@@ -1100,29 +1123,6 @@ scene.onOverlapTile(SpriteKind.Player, sprites.castle.tilePath8, function (sprit
     }
     tilemap2Count += 1
 })
-function CuttingDownTree (TreeSprite: Sprite, LocationColumm: number, LocationRow: number, NewTile: Image) {
-    for (let value of sprites.allOfKind(SpriteKind.tools)) {
-        if (value.image.equals(img`
-            1 1 1 1 1 1 1 1 1 
-            1 1 1 1 1 f f 1 1 
-            1 1 1 1 f f e f 1 
-            1 1 1 f f e f f f 
-            1 1 1 1 e f f f f 
-            1 1 1 e 1 1 f f f 
-            1 1 e 1 1 1 1 f 1 
-            1 e 1 1 1 1 1 1 1 
-            e 1 1 1 1 1 1 1 1 
-            `)) {
-            if (controller.A.isPressed()) {
-                tiles.setTileAt(tiles.getTileLocation(LocationColumm, LocationRow), NewTile)
-                tiles.placeOnTile(TreeSprite, tiles.getTileLocation(LocationColumm, LocationRow))
-                music.play(music.melodyPlayable(music.thump), music.PlaybackMode.UntilDone)
-                sprites.destroy(TreeSprite, effects.ashes, 500)
-                PlankCount += 1
-            }
-        }
-    }
-}
 function SpawnPeople (ImageList: Image[], NewTile: Image) {
     for (let value of tiles.getTilesByType(sprites.dungeon.collectibleInsignia)) {
         Peoples = sprites.create(ImageList._pickRandom(), SpriteKind.Seller)
@@ -1154,7 +1154,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.ClosedChest, function (sprite, o
     game.splash("You have:", "$" + KeepingScore)
 })
 scene.onOverlapTile(SpriteKind.Player, sprites.castle.saplingOak, function (sprite, location) {
-    Tree2 = sprites.create(img`
+    UsingAxe(location.column, location.row, sprites.castle.tileDarkGrass3, img`
         . . . . . . . . . . . . . . . . 
         . . . . . . c c c c 6 . . . . . 
         . . . . c c 6 7 7 5 5 6 6 . . . 
@@ -1171,14 +1171,12 @@ scene.onOverlapTile(SpriteKind.Player, sprites.castle.saplingOak, function (spri
         . . . . . 4 f f f c . e . . . . 
         . . . . . . e e e . . 4 . . . . 
         . . . . . . . e e . e . . . . . 
-        `, SpriteKind.Nature)
-    CuttingDownTree(Tree2, location.column, location.row, sprites.castle.tileDarkGrass3)
+        `)
 })
-let Tree2: Sprite = null
 let Peoples: Sprite = null
+let Tree: Sprite = null
 let AskYorN = 0
 let FishCaught: Sprite = null
-let Tree1: Sprite = null
 let Chest: Sprite = null
 let Stone: Sprite = null
 let BaitCount = 0
