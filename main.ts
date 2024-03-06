@@ -266,7 +266,7 @@ scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.floorLightMoss, function 
     tiles.setCurrentTilemap(tilemap`level3`)
     tiles.setWallAt(tiles.getTileLocation(22, 8), false)
     tiles.setTileAt(tiles.getTileLocation(21, 8), sprites.dungeon.floorDark2)
-    SpawnPeople(SellerImages)
+    SpawnPeople(SellerImages, sprites.dungeon.floorLight0)
     for (let value of tiles.getTilesByType(sprites.dungeon.floorDarkDiamond)) {
         Chest = sprites.create(img`
             . b b b b b b b b b b b b b b . 
@@ -1054,7 +1054,7 @@ scene.onOverlapTile(SpriteKind.Player, sprites.castle.tilePath8, function (sprit
         `)
     tiles.setCurrentTilemap(tilemap`level3`)
     tiles.placeOnTile(Player1, tiles.getTileLocation(8, 12))
-    SpawnPeople(SellerImages)
+    SpawnPeople(SellerImages, sprites.dungeon.floorDark2)
     for (let value of tiles.getTilesByType(sprites.dungeon.floorDarkDiamond)) {
         if (tilemap2Count == 0) {
             Chest = sprites.create(img`
@@ -1123,15 +1123,11 @@ function CuttingDownTree (TreeSprite: Sprite, LocationColumm: number, LocationRo
         }
     }
 }
-function SpawnPeople (ImageList: Image[]) {
+function SpawnPeople (ImageList: Image[], NewTile: Image) {
     for (let value of tiles.getTilesByType(sprites.dungeon.collectibleInsignia)) {
         Peoples = sprites.create(ImageList._pickRandom(), SpriteKind.Seller)
         tiles.placeOnTile(Peoples, value)
-        if (tiles.tileAtLocationEquals(tiles.getTileLocation(0, 0), sprites.castle.tileGrass2)) {
-            tiles.setTileAt(value, sprites.dungeon.floorDark2)
-        } else if (tiles.tileAtLocationEquals(tiles.getTileLocation(0, 0), sprites.dungeon.floorLight0)) {
-            tiles.setTileAt(value, sprites.dungeon.floorLight0)
-        }
+        tiles.setTileAt(value, NewTile)
     }
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.ClosedChest, function (sprite, otherSprite) {
