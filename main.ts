@@ -106,10 +106,7 @@ scene.onHitWall(SpriteKind.Player, function (sprite, location) {
             e 1 1 1 1 1 1 1 1 
             `)) {
             if (controller.A.isPressed()) {
-                if (tiles.tileAtLocationEquals(location, assets.tile`myTile2`)) {
-                    tiles.setWallAt(location, false)
-                    tiles.setTileAt(location, sprites.dungeon.floorDark2)
-                } else if (tiles.tileAtLocationEquals(location, sprites.castle.rock0)) {
+                if (tiles.tileAtLocationEquals(location, sprites.castle.rock0)) {
                     Stone = sprites.create(img`
                         . . . . . c c b b b . . . . . . 
                         . . . . c b d d d d b . . . . . 
@@ -485,6 +482,7 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile18`, function (sprite, 
     sprites.destroyAllSpritesOfKind(SpriteKind.ClosedChest)
     sprites.destroyAllSpritesOfKind(SpriteKind.Seller)
     sprites.destroyAllSpritesOfKind(SpriteKind.OpenChest)
+    sprites.destroyAllSpritesOfKind(SpriteKind.Nature)
     scene.setBackgroundImage(img`
         6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
         6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
@@ -608,7 +606,31 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile18`, function (sprite, 
         6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
         `)
     tiles.setCurrentTilemap(tilemap`level1`)
+    for (let value of tiles.getTilesByType(sprites.castle.tileDarkGrass1)) {
+        Flower = sprites.create(img`
+            . . . . . . . . 
+            . . . . . . . . 
+            . . . . . . . . 
+            . . . . . . . . 
+            . b b d d b b . 
+            b 1 1 3 3 1 1 b 
+            b 1 3 5 5 3 1 b 
+            b d 3 5 5 3 d b 
+            c 1 1 d d 1 1 c 
+            c d 1 d d 1 d c 
+            . c c 7 6 c c . 
+            . . 6 7 6 . . . 
+            . . 6 6 8 8 8 6 
+            . . 6 8 7 7 7 6 
+            . . 8 7 7 7 6 . 
+            . . 8 8 8 6 . . 
+            `, SpriteKind.Player)
+        tiles.placeOnTile(Flower, value)
+    }
     tiles.placeOnTile(Player1, tiles.getTileLocation(1, 13))
+})
+scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile21`, function (sprite, location) {
+    Fishing(FishesTilemap2, 9, 6)
 })
 function Fishing (FishTypes: Sprite[], columm: number, row: number) {
     for (let value of sprites.allOfKind(SpriteKind.tools)) {
@@ -695,7 +717,7 @@ function Fishing (FishTypes: Sprite[], columm: number, row: number) {
                     }
                 } else {
                     tiles.placeOnTile(Player1, tiles.getTileLocation(columm, row))
-                    game.splash("You don't have bait", "Go buy some")
+                    game.splash("You don't have any bait", "Go buy some")
                 }
             }
         }
@@ -1150,7 +1172,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.ClosedChest, function (sprite, o
         b b b b b b b b b b b b b b b b 
         . b b . . . . . . . . . . b b . 
         `)
-    KeepingScore += PointValues._pickRandom()
+    KeepingScore += randint(6, 9)
     game.splash("You have:", "$" + KeepingScore)
 })
 scene.onOverlapTile(SpriteKind.Player, sprites.castle.saplingOak, function (sprite, location) {
@@ -1177,6 +1199,7 @@ let Peoples: Sprite = null
 let Tree: Sprite = null
 let AskYorN = 0
 let FishCaught: Sprite = null
+let Flower: Sprite = null
 let Chest: Sprite = null
 let Stone: Sprite = null
 let BaitCount = 0
@@ -1193,7 +1216,6 @@ let FishesTilemap1: Sprite[] = []
 let ToolsImagesList: Image[] = []
 let SellerImages: Image[] = []
 let Player1: Sprite = null
-let PointValues: number[] = []
 let tilemap2Count = 0
 let KeepingScore = 0
 music.play(music.stringPlayable("B C5 G G - F F D ", 120), music.PlaybackMode.LoopingInBackground)
@@ -1321,13 +1343,6 @@ scene.setBackgroundImage(img`
     7777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777
     7777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777
     `)
-PointValues = [
-6,
-9,
-8,
-6,
-7
-]
 Player1 = sprites.create(img`
     . . . . . . . f f . . . . . . . 
     . . . . . f f 4 4 f f . . . . . 
@@ -1629,7 +1644,7 @@ StoneCount = 0
 BaitCount = 0
 tiles.setCurrentTilemap(tilemap`level2`)
 tiles.placeOnTile(Player1, tiles.getTileLocation(18, 16))
-game.splash("Get $500,000 to win", "Your score is your money")
+game.splash("Get $300,000 to win", "Your score is your money")
 game.splash("Walk around and explore")
 controller.moveSprite(Player1)
 scene.cameraFollowSprite(Player1)
