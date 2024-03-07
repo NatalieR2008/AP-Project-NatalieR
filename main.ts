@@ -5,7 +5,6 @@ namespace SpriteKind {
     export const CommonFish = SpriteKind.create()
     export const RareFish = SpriteKind.create()
     export const EpicFish = SpriteKind.create()
-    export const Wood = SpriteKind.create()
     export const OpenChest = SpriteKind.create()
     export const Nature = SpriteKind.create()
 }
@@ -125,7 +124,11 @@ scene.onHitWall(SpriteKind.Player, function (sprite, location) {
                         . . . . . . c c b b b b c c . . 
                         . . . . . . . . c c c c . . . . 
                         `, SpriteKind.Nature)
-                    tiles.setTileAt(location, sprites.castle.tileGrass3)
+                    if (tiles.tileAtLocationEquals(tiles.getTileLocation(0, 0), sprites.castle.tileGrass2)) {
+                        tiles.setTileAt(location, sprites.castle.tileGrass3)
+                    } else {
+                        tiles.setTileAt(location, sprites.castle.tileDarkGrass1)
+                    }
                     music.play(music.melodyPlayable(music.smallCrash), music.PlaybackMode.UntilDone)
                     sprites.destroy(Stone, effects.disintegrate, 500)
                     tiles.placeOnTile(Stone, location)
@@ -138,6 +141,7 @@ scene.onHitWall(SpriteKind.Player, function (sprite, location) {
 })
 scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.floorLightMoss, function (sprite, location) {
     sprites.destroyAllSpritesOfKind(SpriteKind.Seller)
+    sprites.destroyAllSpritesOfKind(SpriteKind.Nature)
     scene.setBackgroundImage(img`
         bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
         bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
@@ -766,107 +770,120 @@ controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     )
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Seller, function (sprite, otherSprite) {
-    if (otherSprite.tileKindAt(TileDirection.Bottom, assets.tile`myTile1`)) {
-        AskYorN = game.askForNumber("Do you want to sell the fish you have? Y(1)/N(2)", 1)
-        tiles.placeOnTile(Player1, tiles.getTileLocation(5, 3))
-        if (AskYorN == 1) {
-            KeepingScore += CommonFishCount * 3 + (RareFishCount * 10 + EpicFishCount * 15)
-            CommonFishCount += 0
-            RareFishCount += 0
-            EpicFishCount += 0
-        }
-    } else if (otherSprite.tileKindAt(TileDirection.Left, assets.tile`myTile14`)) {
-        AskYorN = game.askForNumber("Buy a random tool for $20? Y(1)/N(2)", 1)
-        tiles.placeOnTile(Player1, tiles.getTileLocation(18, 4))
-        if (AskYorN == 1) {
-            if (KeepingScore >= 20) {
-                KeepingScore += -20
-                if (Inventory1.image.equals(img`
-                    . . . . . . . . . . . . . . . . 
-                    . . . . . . . . . . . . . . . . 
-                    . . . . . . . . . . . . . . . . 
-                    . . . . . . . . . . . . . . . . 
-                    . . . . . . . . . . . . . . . . 
-                    . . . . . . . . . . . . . . . . 
-                    . . . . . . . . . . . . . . . . 
-                    . . . . . . . . . . . . . . . . 
-                    . . . . . . . . . . . . . . . . 
-                    . . . . . . . . . . . . . . . . 
-                    . . . . . . . . . . . . . . . . 
-                    . . . . . . . . . . . . . . . . 
-                    . . . . . . . . . . . . . . . . 
-                    . . . . . . . . . . . . . . . . 
-                    . . . . . . . . . . . . . . . . 
-                    . . . . . . . . . . . . . . . . 
-                    `)) {
-                    Inventory1.setImage(ToolsImagesList.removeAt(randint(0, ToolsImagesList.length - 1)))
-                } else if (Inventory2.image.equals(img`
-                    . . . . . . . . . . . . . . . . 
-                    . . . . . . . . . . . . . . . . 
-                    . . . . . . . . . . . . . . . . 
-                    . . . . . . . . . . . . . . . . 
-                    . . . . . . . . . . . . . . . . 
-                    . . . . . . . . . . . . . . . . 
-                    . . . . . . . . . . . . . . . . 
-                    . . . . . . . . . . . . . . . . 
-                    . . . . . . . . . . . . . . . . 
-                    . . . . . . . . . . . . . . . . 
-                    . . . . . . . . . . . . . . . . 
-                    . . . . . . . . . . . . . . . . 
-                    . . . . . . . . . . . . . . . . 
-                    . . . . . . . . . . . . . . . . 
-                    . . . . . . . . . . . . . . . . 
-                    . . . . . . . . . . . . . . . . 
-                    `)) {
-                    Inventory2.setImage(ToolsImagesList.removeAt(randint(0, ToolsImagesList.length - 1)))
+    if (controller.B.isPressed()) {
+        if (otherSprite.tileKindAt(TileDirection.Bottom, assets.tile`myTile1`)) {
+            AskYorN = game.askForNumber("Do you want to sell the fish you have? Y(1)/N(2)", 1)
+            tiles.placeOnTile(Player1, tiles.getTileLocation(5, 3))
+            if (AskYorN == 1) {
+                KeepingScore += CommonFishCount * 3 + (RareFishCount * 10 + EpicFishCount * 15)
+                CommonFishCount += 0
+                RareFishCount += 0
+                EpicFishCount += 0
+            }
+        } else if (otherSprite.tileKindAt(TileDirection.Left, assets.tile`myTile14`)) {
+            AskYorN = game.askForNumber("Buy a random tool for $20? Y(1)/N(2)", 1)
+            tiles.placeOnTile(Player1, tiles.getTileLocation(18, 4))
+            if (AskYorN == 1) {
+                if (KeepingScore >= 20) {
+                    KeepingScore += -20
+                    if (Inventory1.image.equals(img`
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        `)) {
+                        Inventory1.setImage(ToolsImagesList.removeAt(randint(0, ToolsImagesList.length - 1)))
+                    } else if (Inventory2.image.equals(img`
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        . . . . . . . . . . . . . . . . 
+                        `)) {
+                        Inventory2.setImage(ToolsImagesList.removeAt(randint(0, ToolsImagesList.length - 1)))
+                    } else {
+                        Inventory3.setImage(ToolsImagesList.removeAt(randint(0, ToolsImagesList.length - 1)))
+                    }
+                    pause(100)
                 } else {
-                    Inventory3.setImage(ToolsImagesList.removeAt(randint(0, ToolsImagesList.length - 1)))
+                    tiles.placeOnTile(Player1, tiles.getTileLocation(18, 4))
+                    game.splash("You don't have $20")
+                    pause(100)
                 }
-                pause(100)
-            } else {
-                tiles.placeOnTile(Player1, tiles.getTileLocation(18, 4))
-                game.splash("You don't have $20")
-                pause(100)
             }
-        }
-    } else if (otherSprite.tileKindAt(TileDirection.Top, assets.tile`myTile1`)) {
-        AskYorN = game.askForNumber("Sell the wood you've collected? Y(1)/N(2)", 1)
-        tiles.placeOnTile(Player1, tiles.getTileLocation(3, 11))
-        if (AskYorN == 1) {
-            KeepingScore += PlankCount * 4
-            PlankCount = 0
-        }
-    } else if (otherSprite.tileKindAt(TileDirection.Left, sprites.castle.rock2)) {
-        AskYorN = game.askForNumber("Sell the wood you've collected? Y(1)/N(2)", 1)
-        tiles.placeOnTile(Player1, tiles.getTileLocation(16, 12))
-        if (AskYorN == 1) {
-            KeepingScore += StoneCount * 6
-            StoneCount = 0
-        }
-    } else if (otherSprite.tileKindAt(TileDirection.Left, sprites.castle.shrub)) {
-        AskYorN = game.askForNumber("Buy bait($1)? Type the amount you want N(0)", 2)
-        tiles.placeOnTile(Player1, tiles.getTileLocation(12, 3))
-        if (AskYorN == 0) {
+        } else if (otherSprite.tileKindAt(TileDirection.Top, assets.tile`myTile1`)) {
+            AskYorN = game.askForNumber("Sell the wood you've collected? Y(1)/N(2)", 1)
+            tiles.placeOnTile(Player1, tiles.getTileLocation(3, 11))
+            if (AskYorN == 1) {
+                KeepingScore += PlankCount * 4
+                PlankCount = 0
+            }
+        } else if (otherSprite.tileKindAt(TileDirection.Left, sprites.castle.rock2)) {
+            AskYorN = game.askForNumber("Sell the wood you've collected? Y(1)/N(2)", 1)
+            tiles.placeOnTile(Player1, tiles.getTileLocation(16, 12))
+            if (AskYorN == 1) {
+                KeepingScore += StoneCount * 6
+                StoneCount = 0
+            }
+        } else if (otherSprite.tileKindAt(TileDirection.Left, sprites.castle.shrub)) {
+            AskYorN = game.askForNumber("Buy bait($1)? Type the amount you want N(0)", 2)
             tiles.placeOnTile(Player1, tiles.getTileLocation(12, 3))
-        } else {
-            if (KeepingScore > AskYorN || KeepingScore == AskYorN) {
-                KeepingScore += -1 * AskYorN
-                BaitCount += AskYorN
-                game.splash("You have:" + BaitCount + " Bait")
+            if (AskYorN == 0) {
+                tiles.placeOnTile(Player1, tiles.getTileLocation(12, 3))
             } else {
-                game.splash("You don't have enough")
+                if (KeepingScore > AskYorN || KeepingScore == AskYorN) {
+                    KeepingScore += -1 * AskYorN
+                    BaitCount += AskYorN
+                    game.splash("You have:" + BaitCount + " Bait")
+                } else {
+                    game.splash("You don't have enough")
+                }
             }
-        }
-    } else if (otherSprite.tileKindAt(TileDirection.Bottom, sprites.dungeon.floorDark5)) {
-        AskYorN = game.askForNumber("To go through pay $1000 Y(1)/N(2)", 1)
-        tiles.placeOnTile(Player1, tiles.getTileLocation(20, 8))
-        if (AskYorN == 1) {
-            if (KeepingScore >= 1000) {
-                KeepingScore += -1000
-                tiles.setWallAt(tiles.getTileLocation(22, 8), false)
-                game.splash("Walk through the door now")
-            } else {
-                game.splash("You don't have enough")
+        } else if (otherSprite.tileKindAt(TileDirection.Bottom, sprites.dungeon.floorDark5)) {
+            AskYorN = game.askForNumber("To go through pay $1000 Y(1)/N(2)", 1)
+            tiles.placeOnTile(Player1, tiles.getTileLocation(20, 8))
+            if (AskYorN == 1) {
+                if (KeepingScore >= 1000) {
+                    KeepingScore += -1000
+                    tiles.setWallAt(tiles.getTileLocation(22, 8), false)
+                    game.splash("Walk through the door now")
+                } else {
+                    game.splash("You don't have enough")
+                }
+            }
+        } else if (otherSprite.tileKindAt(TileDirection.Bottom, assets.tile`myTile4`)) {
+            AskYorN = game.askForNumber("Buy a $50 key to the house? Y(1)/N(2)", 1)
+            tiles.placeOnTile(Player1, tiles.getTileLocation(2, 20))
+            if (AskYorN == 1) {
+                if (KeepingScore >= 50) {
+                    KeepingScore += -50
+                    game.splash("Enter the house")
+                } else {
+                    game.splash("You don't have enough")
+                }
             }
         }
     }
@@ -1098,7 +1115,7 @@ scene.onOverlapTile(SpriteKind.Player, sprites.castle.tilePath8, function (sprit
         bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
         `)
     tiles.setCurrentTilemap(tilemap`level3`)
-    tiles.placeOnTile(Player1, tiles.getTileLocation(8, 12))
+    tiles.placeOnTile(Player1, tiles.getTileLocation(10, 13))
     SpawnPeople(SellerImages, sprites.dungeon.floorDark2)
     for (let value of tiles.getTilesByType(sprites.dungeon.floorDarkDiamond)) {
         if (tilemap2Count == 0) {
@@ -1144,6 +1161,8 @@ scene.onOverlapTile(SpriteKind.Player, sprites.castle.tilePath8, function (sprit
         }
     }
     tilemap2Count += 1
+    game.splash("Press B to interact ", "with merchants")
+    game.splash("Get money from chests", "and buy a tool")
 })
 function SpawnPeople (ImageList: Image[], NewTile: Image) {
     for (let value of tiles.getTilesByType(sprites.dungeon.collectibleInsignia)) {
@@ -1390,10 +1409,10 @@ SellerImages = [img`
     f b b 4 1 f d d f 1 4 b b f 
     . f b f d d d d d d f b f . 
     . f e f e 4 4 4 4 e f e f . 
-    . e 4 f 6 9 9 9 9 6 f 4 e . 
-    . 4 d c 9 9 9 9 9 9 c d 4 . 
-    . 4 f b 3 b 3 b 3 b b f 4 . 
-    . . f f 3 b 3 b 3 3 f f . . 
+    . e 4 f 6 3 3 3 3 6 f 4 e . 
+    . 4 d c 3 3 3 3 3 3 c d 4 . 
+    . 4 f b 6 b 6 b 6 b b f 4 . 
+    . . f f 6 b 6 b 6 6 f f . . 
     . . . . f f b b f f . . . . 
     `, img`
     . . . . f f f f . . . . . 
@@ -1407,45 +1426,45 @@ SellerImages = [img`
     . f 4 1 f 4 4 f 1 4 f . . 
     . f e 4 4 4 4 4 4 e f . . 
     . f f f e e e e f f f . . 
-    f e f b 7 7 7 7 b f e f . 
-    e 4 f 7 7 7 7 7 7 f 4 e . 
+    f e f b 3 3 3 3 b f e f . 
+    e 4 f 3 3 3 3 3 3 f 4 e . 
     e e f 6 6 6 6 6 6 f e e . 
     . . . f f f f f f . . . . 
     . . . f f . . f f . . . . 
     `]
 let PeopleTasksImages = [img`
     . . . . . . f f f f . . . . . . 
-    . . . . f f f 2 2 f f f . . . . 
-    . . . f f f 2 2 2 2 f f f . . . 
+    . . . . f f f 8 8 f f f . . . . 
+    . . . f f f 8 8 8 8 f f f . . . 
     . . f f f e e e e e e f f f . . 
-    . . f f e 2 2 2 2 2 2 e e f . . 
-    . . f e 2 f f f f f f 2 e f . . 
+    . . f f e 8 8 8 8 8 8 e e f . . 
+    . . f e 8 f f f f f f 8 e f . . 
     . . f f f f e e e e f f f f . . 
     . f f e f b f 4 4 f b f e f f . 
     . f e e 4 1 f d d f 1 4 e e f . 
     . . f e e d d d d d d e e f . . 
     . . . f e e 4 4 4 4 e e f . . . 
-    . . e 4 f 2 2 2 2 2 2 f 4 e . . 
-    . . 4 d f 2 2 2 2 2 2 f d 4 . . 
+    . . e 4 f 8 8 8 8 8 8 f 4 e . . 
+    . . 4 d f 8 8 8 8 8 8 f d 4 . . 
     . . 4 4 f 4 4 5 5 4 4 f 4 4 . . 
     . . . . . f f f f f f . . . . . 
     . . . . . f f . . f f . . . . . 
     `, img`
     . . . . . . . c c c . . . . . . 
-    . . . . . . c b a c . . . . . . 
-    . . . . c c c a a c c c . . . . 
-    . . c c b c a a a a c c c c . . 
-    . c b b a b a a a a b a b b c . 
-    . c b a a b b a a b b a a b c . 
-    . . f a a a b b b b a a a c . . 
-    . . f f a a a a a a a a f f . . 
+    . . . . . . c b 8 c . . . . . . 
+    . . . . c c c 8 8 c c c . . . . 
+    . . c c b c 8 8 8 8 c c c c . . 
+    . c 8 b 8 b 8 8 8 8 b 8 b b c . 
+    . c b 8 8 b b 8 8 b b 8 8 b c . 
+    . . f 8 8 8 b b b b 8 8 8 c . . 
+    . . f f 8 8 8 8 8 8 8 8 f f . . 
     . . f f f b f e e f b f f f . . 
-    . . f f f 1 f b b f 1 f f f . . 
-    . . . f f b b b b b b f f . . . 
+    . . f f f 1 f d d f 1 f f f . . 
+    . . . f f d d d d d d f f . . . 
     . . . e e f e e e e f e e . . . 
-    . . e b c b a b b a b f b e . . 
-    . . e e f a a a a a a f e e . . 
-    . . . . c b a a a a b c . . . . 
+    . . e d c d 8 d d 8 d f d e . . 
+    . . e e f 8 8 8 8 8 8 f e e . . 
+    . . . . c d 8 8 8 8 d c . . . . 
     . . . . . f f f f f f . . . . . 
     `, img`
     . . . . f f f f . . . . 
@@ -1568,6 +1587,9 @@ let PurpleFish = sprites.create(img`
     a a . a a a a a a a . 
     a . . . a a a a a . . 
     `, SpriteKind.EpicFish)
+sprites.destroyAllSpritesOfKind(SpriteKind.CommonFish)
+sprites.destroyAllSpritesOfKind(SpriteKind.RareFish)
+sprites.destroyAllSpritesOfKind(SpriteKind.EpicFish)
 FishesTilemap1 = [
 GrayFish,
 TanFish,
@@ -1644,7 +1666,7 @@ StoneCount = 0
 BaitCount = 0
 tiles.setCurrentTilemap(tilemap`level2`)
 tiles.placeOnTile(Player1, tiles.getTileLocation(18, 16))
-game.splash("Get $300,000 to win", "Your score is your money")
+game.splash("Get $100,000 to win", "Your score is your money")
 game.splash("Walk around and explore")
 controller.moveSprite(Player1)
 scene.cameraFollowSprite(Player1)
